@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import path, re_path, include
 from Testing import views
 
 
@@ -30,4 +31,6 @@ urlpatterns = [
     re_path(r'^api/themes/(?P<pk>[0-9]+)$', views.theme_detail),
     re_path(r'^api/algorithm/(?P<pk>[0-9]+)$', views.test_algorithm),
     re_path(r'^api/question_theme/(?P<pk>[0-9]+)$', views.questions_theme),
+    re_path('auth/', include('djoser.urls')),
+    re_path('auth/token/', obtain_auth_token, name='token'),
 ]

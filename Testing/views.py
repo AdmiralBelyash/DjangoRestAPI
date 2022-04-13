@@ -1,11 +1,17 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.views import APIView
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import User, UserAnswer, Answers, Questions, Testing, Competence, Roles, Themes, Levels
 from .serializers import *
 
+
+class Logout(APIView):
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST'])
 def users_list(request):
@@ -272,44 +278,48 @@ def questions_theme(request, pk):
     return Response(serializer.data)
 
 
+
+def change_difficult_level(id_level):
+    if current_score >= pass_score:
+        id_level += 1
+    else:
+        id_level -= 1
+    return id_level
+ 
+def change_theme(id_theme):
+    id_theme += 1
+    return id_theme
+
+
 @api_view(['GET'])
 def test_algorithm(request, pk):
-    if int(pk) == 0:
-        try:
-            questions = Questions.objects.all()[:3]
-        except Questions.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = QuestionsSerializer(questions, context={'request': request}, many=True)
-        return Response(serializer.data)
+    id_level = 2;
+    id_theme = 1;
+    iterations_count = 0;
+    
+    pass_answers_count = 6;
+    try:
+        questions = Questions.objects.all().filter(level_id=id_level, theme_id=id_theme)[:3]
+    except Questions.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = QuestionsSerializer(questions, context={'request': request}, many=True)
+    return Response(serializer.data)   
+    
 
-    correct_answers = int(pk) // 100
-    id_theme = int((int(pk) / 10) % 10)
-    id_level = int(pk) % 10
-    if id_level == 3:
-        id_theme += 1
-        try:
-            questions = Questions.objects.all().filter(level_id=2, theme_id=id_theme)
-        except Questions.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = QuestionsSerializer(questions, context={'request': request}, many=True)
-        return Response(serializer.data)
-
-    else:
-        if correct_answers >= 2:
-            id_level += 1
-            try:
-                questions = Questions.objects.all().filter(level_id=id_level, theme_id=id_theme)
-            except Questions.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            serializer = QuestionsSerializer(questions, context={'request': request}, many=True)
-            return Response(serializer.data)
-        else:
-            id_level -= 1
-            try:
-                questions = Questions.objects.all().filter(level_id=id_level, theme_id=id_theme)
-            except Questions.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            serializer = QuestionsSerializer(questions, context={'request': request}, many=True)
-            return Response(serializer.data)
-
+    if (request.json()["answers" : {"is_correct" : true}]):
+        correct_answers += 1
+        if (request.json()["type" : 1]):
+            current_score += 1
+        if (request.json()["type" : 2]):
+            current_score += 2
+    
+    all_answers += 1
+    
+    if (all_answers / 5) == 0:
+       id_theme = change_theme(id_theme)
+    
+    if all_answers >= pass_answers_count:
+       id_level = change_difficult_level(id_level)
+       iterations_count += 1
+    
 
