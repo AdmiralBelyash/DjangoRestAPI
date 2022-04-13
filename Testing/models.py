@@ -180,3 +180,17 @@ class Testing(models.Model):
     class Meta:
         verbose_name = "Тест"
         verbose_name_plural = "Тесты"
+
+
+
+
+class Courses(models.Model):
+    """Курсы"""
+    theme = models.ForeignKey(Themes, related_name="theme", on_delete=models.CASCADE)
+    level = models.ForeignKey(Levels, related_name="level", on_delete=models.CASCADE)
+    link = models.CharField("Ссылка на курс", max_length = 200)
+    
+    
+    class Meta:
+        verbose_name = "Курс для повышения квалификации"
+        verbose_name_plural = "Курсы для повышения квалификации"
