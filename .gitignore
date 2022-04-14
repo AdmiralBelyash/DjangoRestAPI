@@ -1,0 +1,5 @@
+.idea
+Pipfile.lock
+Pipfile
+db.sqlite3
+desktop.ini
