@@ -1,9 +1,37 @@
 import datetime
 from typing import Union, List, Dict
+
+import django.contrib.auth.models
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    post = models.CharField("Должность сотрудника", max_length=150, default="Unknown")
+    phone_number = models.CharField("Номер телефона", max_length=12, unique=True, default="Unknown")
+    address = models.CharField("Адрес сотрудника", max_length=150, default="Unknown")
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
+
 
 
 class Competence(models.Model):
