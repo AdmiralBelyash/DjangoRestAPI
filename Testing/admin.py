@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Courses
+from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Courses, Profile
 from django.contrib.auth.models import User, Group
 
 admin.site.register(UserAnswer)
@@ -10,6 +10,7 @@ admin.site.register(Themes)
 admin.site.register(Levels)
 admin.site.register(Testing)
 admin.site.register(Courses)
+admin.site.register(Profile)
 
 
 class AnswerInline(admin.TabularInline):

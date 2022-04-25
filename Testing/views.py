@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, status
-from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels
+from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Profile
 from django.contrib.auth.models import User, Group
 from . import serializers
 
@@ -12,8 +12,8 @@ class UserList(generics.ListAPIView):
 
 
 class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
+    queryset = Profile.objects.all()
+    serializer_class = serializers.ProfileSerializer
 
 
 class Logout(APIView):
@@ -50,5 +50,4 @@ class ThemeList(generics.ListCreateAPIView):
 class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
-
 
