@@ -25,7 +25,7 @@ class Profile(models.Model):
     post = models.CharField("Должность сотрудника", max_length=150, default="Unknown")
     phone_number = models.CharField("Номер телефона", max_length=12, unique=True, default="Unknown")
     address = models.CharField("Адрес сотрудника", max_length=150, default="Unknown")
-    current_level = models.OneToOneField(Levels, default=2, on_delete=models.SET(2))
+    current_level = models.ForeignKey(Levels, on_delete=models.SET(2))
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
