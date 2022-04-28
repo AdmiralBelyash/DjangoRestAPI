@@ -1,7 +1,6 @@
 import datetime
 from typing import Union, List, Dict
 
-import django.contrib.auth.models
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -10,11 +9,23 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+class Levels(models.Model):
+    name = models.CharField("Сложность", max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Уровень сложности"
+        verbose_name_plural = "Уровни сложности"
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     post = models.CharField("Должность сотрудника", max_length=150, default="Unknown")
     phone_number = models.CharField("Номер телефона", max_length=12, unique=True, default="Unknown")
     address = models.CharField("Адрес сотрудника", max_length=150, default="Unknown")
+    current_level = models.OneToOneField(Levels, default=2, on_delete=models.SET(2))
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -31,7 +42,6 @@ class Profile(models.Model):
     class Meta:
         verbose_name = "Профиль"
         verbose_name_plural = "Профили"
-
 
 
 class Competence(models.Model):
@@ -60,17 +70,6 @@ class Themes(models.Model):
     class Meta:
         verbose_name = "Тема"
         verbose_name_plural = "Темы"
-
-
-class Levels(models.Model):
-    name = models.CharField("Сложность", max_length=50)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = "Уровень сложности"
-        verbose_name_plural = "Уровни сложности"
 
 
 def f(value: Union[Dict, List]) -> None:
