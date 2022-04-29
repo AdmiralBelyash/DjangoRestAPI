@@ -20,7 +20,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class AnswersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answers
-        fields = "__all__"
+        fields = ['pk', 'answer', 'is_correct']
 
 
 class QuestionsSerializer(serializers.ModelSerializer):
