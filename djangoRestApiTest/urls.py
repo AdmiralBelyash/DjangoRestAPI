@@ -15,6 +15,7 @@ urlpatterns = [
     path('themes/<int:pk>/', views.ThemeDetail.as_view()),
     path('auth/', include('djoser.urls')),
     path('auth/token/', obtain_auth_token, name='token'),
+    path('algorithm/<int:pk>/', views.test_algorithm),
     path('api-auth/', include('rest_framework.urls')),
     path('test/', views.Test.as_view())
 ]

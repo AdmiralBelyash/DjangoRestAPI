@@ -6,6 +6,7 @@ from rest_framework import generics, status
 from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Profile
 from django.contrib.auth.models import User, Group
 from . import serializers
+from rest_framework.decorators import api_view
 
 
 class UserList(generics.ListAPIView):
@@ -60,14 +61,8 @@ class TestingDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class QuestionsList(generics.ListCreateAPIView):
-    queryset = Questions.objects.all()
     serializer_class = serializers.QuestionsSerializer
-
-    def get(self, request, *args, **kwargs):
-        data = request.data
-        filtered_questions = Questions.objects.filter(theme=data)
-        serializer = serializers.QuestionsSerializer(filtered_questions)
-        return Response(serializer.data)
+    queryset= Questions.objects.all()
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -160,3 +155,44 @@ class Test(generics.ListAPIView):
     serializer_class = serializers.QuestionsSerializer
 
 
+@api_view(['GET'])
+def test_algorithm(request, pk):
+    if int(pk) == 0:
+        try:
+            questions = Questions.objects.all()[:1]
+        except Questions.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = serializers.QuestionsSerializer(questions, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+    correct_answers = int(pk) // 100
+    id_theme = int((int(pk) / 10) % 10)
+    id_level = int(pk) % 10
+    if id_level == 3:
+        id_theme += 1
+        id_level -= 1
+        try:
+            questions = Questions.objects.all().filter(level_id=id_level, theme_id=id_theme)[:1]
+        except Questions.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = serializers.QuestionsSerializer(questions, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+    else:
+        if correct_answers >= 2:
+            id_level += 1
+            try:
+                questions = Questions.objects.all().filter(level_id=id_level, theme_id=id_theme)[:1]
+            except Questions.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            serializer = serializers.QuestionsSerializer(questions, context={'request': request}, many=True)
+            return Response(serializer.data)
+        else:
+            id_level -= 1
+            id_theme += 1
+            try:
+                questions = Questions.objects.all().filter(level_id=id_level, theme_id=id_theme)[:1]
+            except Questions.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            serializer = serializers.QuestionsSerializer(questions, context={'request': request}, many=True)
+            return Response(serializer.data)
