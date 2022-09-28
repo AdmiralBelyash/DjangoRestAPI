@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-9^d^j3vurvtzj&e+5s^*=d*fp9%*l4*$7_r883v-8^!-)eraz5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ ]
+ALLOWED_HOSTS = ['*']
+
+AUTHENTICATION_BACKENDS = ['djangoRestApiTest.auth.EmailBackend']
 
 
 # Application definition
