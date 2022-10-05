@@ -121,6 +121,13 @@ class TestResultList(generics.ListCreateAPIView):
     queryset = TestingResult.objects.all()
     serializer_class = serializers.TestingResultSerializer
 
+    def get(self, request, *args, **kwargs):
+        results = TestingResult.objects.filter(
+            user_id_id=request.GET.get('user')
+        )
+        serializer = serializers.TestingResultSerializer(results, many=True)
+        return Response(serializer.data)
+
 
 class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TestingResult.objects.all()
@@ -135,7 +142,7 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
         testing_result_object = self.get_object()
         data = request.data
 
-        testing_result_object.user_id = data['user_id']
+        testing_result_object.user_id = User.objects.get(id=data['user_id'])
         testing_result_object.updated_time = data['updated_time']
         testing_result_object.all_questions = data['all_questions']
         testing_result_object.wrong_questions = data['wrong_questions']

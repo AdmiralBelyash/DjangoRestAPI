@@ -227,29 +227,29 @@ class TestingResult(models.Model):
         on_delete=models.CASCADE
     )
     updated_time = models.DateTimeField(
-        name='Updated date',
+        name='updated_date',
         default=django.utils.timezone.now()
     )
     all_questions = models.IntegerField(
-        name='Question summary',
+        name='question_summary',
         help_text='All questions count'
     )
     wrong_questions = models.IntegerField(
-        name='Wrong questions',
+        name='wrong_questions',
         help_text='Wrong answers count'
     )
     skipped_questions = models.IntegerField(
-        name='Skipped question summary',
+        name='skipped_question_summary',
         help_text='Skipped questions count',
         null=True,
     )
     time_summary = models.DurationField(
-        name='Time summary',
+        name='time_summary',
         null=True,
         help_text='Estimated Time'
     )
     time_spent = models.DurationField(
-        name='Time spent',
+        name='time_spent',
         null=True,
         help_text='Time spent'
     )
