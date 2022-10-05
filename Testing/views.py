@@ -1,4 +1,5 @@
 import random
+from typing import Any
 
 from django.contrib.auth.models import User
 from rest_framework import generics, status
@@ -63,6 +64,15 @@ class QuestionsList(generics.ListCreateAPIView):
     queryset = Questions.objects.all()
     serializer_class = serializers.QuestionsSerializer
 
+    def get(self, request, *args, **kwargs):
+        questions = Questions.objects.filter(
+            level__pk=request.GET.get('level'),
+            theme__pk=request.GET.get('theme')
+        )
+        serializer = serializers.QuestionsSerializer(questions, many=True)
+        return Response(serializer.data)
+
+
     def post(self, request, *args, **kwargs):
         data = request.data
         new_question = Questions.objects.create(
@@ -105,53 +115,6 @@ class ThemeList(generics.ListCreateAPIView):
 class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
-
-
-class TestingAlgorithm(generics.RetrieveUpdateAPIView):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # self.response = request.data
-        self.questions_count = 0
-        self.selected_questions_id = []
-
-    def get_level(self):
-        level = self.response['level']
-        return level
-
-    def get_theme(self):
-        competence = self.response['competence']
-        selected_themes_id = []
-        for themes_id in Themes.objects.filter(competence=competence):
-            selected_themes_id.append(themes_id.id)
-        theme = selected_themes_id[random.randrange(len(selected_themes_id))]
-        return theme
-
-    def get_start_questions(self):
-        for question_id in Questions.objects.filter(level=self.get_level(), theme=self.get_theme()):
-            self.selected_questions_id.append(question_id.pk)
-        pk = self.selected_questions_id[random.randrange(len(self.selected_questions_id))]
-        yield Questions.objects.filter(pk=pk)
-        self.selected_questions_id.remove(int(pk))
-
-    def get_question(self):
-        # if self.questions_count < 3:
-        #     serializer = serializers.QuestionsSerializer(self.get_start_questions())
-        #     self.questions_count += 1
-        #     return Response(serializer.data)
-        # else:
-        for question_id in Questions.objects.filter(level=2, theme=2):
-            self.selected_questions_id.append(question_id.pk)
-        pk = self.selected_questions_id[random.randrange(len(self.selected_questions_id))]
-        serializer = serializers.QuestionsSerializer(Questions.objects.filter(pk=pk))
-        self.selected_questions_id.remove(int(pk))
-        self.questions_count += 1
-        return Questions.objects.filter(pk=pk)
-
-
-class Test(generics.ListAPIView):
-    testing = TestingAlgorithm()
-    queryset = testing.get_question()
-    serializer_class = serializers.QuestionsSerializer
 
 
 class TestResultList(generics.ListCreateAPIView):
