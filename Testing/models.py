@@ -1,6 +1,7 @@
 import datetime
 from typing import Union, List, Dict
 
+import django.utils.timezone
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -218,20 +219,40 @@ class Courses(models.Model):
 
 
 class TestingResult(models.Model):
-    user_id = models.IntegerField(name='user_id', help_text='Айди юзер')
-    updated_time = models.DateTimeField(name='Updated date', default=datetime.datetime.now())
-    all_questions = models.IntegerField(name='Question summary', help_text='Всего вопросов')
+    user_id = models.ForeignKey(
+        User,
+        name='user_id',
+        help_text='User ID',
+        null=True,
+        on_delete=models.CASCADE
+    )
+    updated_time = models.DateTimeField(
+        name='Updated date',
+        default=django.utils.timezone.now()
+    )
+    all_questions = models.IntegerField(
+        name='Question summary',
+        help_text='All questions count'
+    )
     wrong_questions = models.IntegerField(
         name='Wrong questions',
-        help_text='Количество неправильно отвеченных вопросов'
+        help_text='Wrong answers count'
     )
     skipped_questions = models.IntegerField(
         name='Skipped question summary',
-        help_text='Всего пропущенных вопросов',
+        help_text='Skipped questions count',
         null=True,
     )
-    time_summary = models.DurationField(name='Time summary', null=True, help_text='Всего времени')
-    time_spent = models.DurationField(name='Time spent', null=True, help_text='Затраченное время')
+    time_summary = models.DurationField(
+        name='Time summary',
+        null=True,
+        help_text='Estimated Time'
+    )
+    time_spent = models.DurationField(
+        name='Time spent',
+        null=True,
+        help_text='Time spent'
+    )
 
     class Meta:
         verbose_name = 'Результат тестирования'
