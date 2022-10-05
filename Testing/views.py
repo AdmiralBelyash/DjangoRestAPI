@@ -1,12 +1,13 @@
 import random
 from typing import Any
 
+from django.contrib.auth.models import User
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import generics, status
-from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Profile
-from django.contrib.auth.models import User, Group
+
 from . import serializers
+from .models import Questions, Testing, Themes, Levels, Profile, TestingResult
 
 
 class UserList(generics.ListAPIView):
@@ -114,3 +115,35 @@ class ThemeList(generics.ListCreateAPIView):
 class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
+
+
+class TestResultList(generics.ListCreateAPIView):
+    queryset = TestingResult.objects.all()
+    serializer_class = serializers.TestingResultSerializer
+
+
+class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TestingResult.objects.all()
+    serializer_class = serializers.TestingResultSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        test_result_obj = self.get_object()
+        test_result_obj.delete()
+        return Response(status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        testing_result_object = self.get_object()
+        data = request.data
+
+        testing_result_object.user_id = data['user_id']
+        testing_result_object.updated_time = data['updated_time']
+        testing_result_object.all_questions = data['all_questions']
+        testing_result_object.wrong_questions = data['wrong_questions']
+        testing_result_object.skipped_questions = data['skipped_questions']
+        testing_result_object.time_summary = data['time_summary']
+        testing_result_object.time_spent = data['time_spent']
+
+        testing_result_object.save()
+
+        serializer = serializers.QuestionsSerializer(testing_result_object)
+        return Response(serializer.data)

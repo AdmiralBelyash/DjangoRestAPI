@@ -215,3 +215,24 @@ class Courses(models.Model):
     class Meta:
         verbose_name = 'Курс для повышения квалификации'
         verbose_name_plural = 'Курсы для повышения квалификации'
+
+
+class TestingResult(models.Model):
+    user_id = models.IntegerField(name='user_id', help_text='Айди юзер')
+    updated_time = models.DateTimeField(name='Updated date', default=datetime.datetime.now())
+    all_questions = models.IntegerField(name='Question summary', help_text='Всего вопросов')
+    wrong_questions = models.IntegerField(
+        name='Wrong questions',
+        help_text='Количество неправильно отвеченных вопросов'
+    )
+    skipped_questions = models.IntegerField(
+        name='Skipped question summary',
+        help_text='Всего пропущенных вопросов',
+        null=True,
+    )
+    time_summary = models.DurationField(name='Time summary', null=True, help_text='Всего времени')
+    time_spent = models.DurationField(name='Time spent', null=True, help_text='Затраченное время')
+
+    class Meta:
+        verbose_name = 'Результат тестирования'
+        verbose_name_plural = 'Результаты тестирования'
