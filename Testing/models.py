@@ -228,7 +228,7 @@ class TestingResult(models.Model):
     )
     updated_time = models.DateTimeField(
         name='updated_date',
-        default=django.utils.timezone.now()
+        default=django.utils.timezone.now
     )
     all_questions = models.IntegerField(
         name='question_summary',
