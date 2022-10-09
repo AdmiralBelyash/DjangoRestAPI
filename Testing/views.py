@@ -2,12 +2,13 @@ import random
 from typing import Any
 
 from django.contrib.auth.models import User
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import serializers
-from .models import Questions, Testing, Themes, Levels, Profile, TestingResult
+from .models import Questions, Testing, Themes, Levels, Profile, TestingResult, Competence
 
 
 class UserList(generics.ListAPIView):
@@ -61,55 +62,41 @@ class TestingDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class QuestionsList(generics.ListCreateAPIView):
-    queryset = Questions.objects.all()
     serializer_class = serializers.QuestionsSerializer
-
-    def get(self, request, *args, **kwargs):
-        questions = Questions.objects.filter(
-            level__pk=request.GET.get('level'),
-            theme__pk=request.GET.get('theme')
-        )
-        serializer = serializers.QuestionsSerializer(questions, many=True)
-        return Response(serializer.data)
+    queryset = Questions.objects.all()
 
 
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        new_question = Questions.objects.create(
-            question=data['question'],
-            theme=Themes(data['theme']),
-            level=Levels(data['level']),
-            type=data['type']
-        )
-        serializer = serializers.QuestionsSerializer(new_question)
-        return Response(serializer.data)
+class QuestionByThemeViewSet(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = serializers.QuestionsSerializer
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        queryset = Questions.objects.all()
+        theme = self.request.query_params.get('theme', None)
+        if theme is not None:
+            queryset = queryset.filter(theme_id=theme)
+        return queryset
 
 
 class QuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Questions.objects.all()
     serializer_class = serializers.QuestionsSerializer
 
-    def destroy(self, request, *args, **kwargs):
-        question_object = self.get_object()
-        question_object.delete()
-        return Response(status=status.HTTP_200_OK)
-
-    def put(self, request, *args, **kwargs):
-        question_object = self.get_object()
-        data = request.data
-
-        question_object.question = data['question']
-        question_object.theme = Themes(data['theme'])
-        question_object.level = Levels(data['level'])
-
-        question_object.save()
-        serializer = serializers.QuestionsSerializer(question_object)
-        return Response(serializer.data)
-
 
 class ThemeList(generics.ListCreateAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
+
+
+class CompetenceList(generics.ListCreateAPIView):
+    queryset = Competence.objects.all()
+    serializer_class = serializers.CompetenceSerializer
+
+
+class CompetenceDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Competence.objects.all()
+    serializer_class = serializers.CompetenceSerializer
 
 
 class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -123,7 +110,7 @@ class TestResultList(generics.ListCreateAPIView):
 
     def get(self, request, *args, **kwargs):
         results = TestingResult.objects.filter(
-            user_id_id=request.GET.get('user')
+            user_id=request.GET.get('user')
         )
         serializer = serializers.TestingResultSerializer(results, many=True)
         return Response(serializer.data)
@@ -132,25 +119,3 @@ class TestResultList(generics.ListCreateAPIView):
 class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TestingResult.objects.all()
     serializer_class = serializers.TestingResultSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        test_result_obj = self.get_object()
-        test_result_obj.delete()
-        return Response(status=status.HTTP_200_OK)
-
-    def put(self, request, *args, **kwargs):
-        testing_result_object = self.get_object()
-        data = request.data
-
-        testing_result_object.user_id = User.objects.get(id=data['user_id'])
-        testing_result_object.updated_time = data['updated_time']
-        testing_result_object.all_questions = data['all_questions']
-        testing_result_object.wrong_questions = data['wrong_questions']
-        testing_result_object.skipped_questions = data['skipped_questions']
-        testing_result_object.time_summary = data['time_summary']
-        testing_result_object.time_spent = data['time_spent']
-
-        testing_result_object.save()
-
-        serializer = serializers.QuestionsSerializer(testing_result_object)
-        return Response(serializer.data)
