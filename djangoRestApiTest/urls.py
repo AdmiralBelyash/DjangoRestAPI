@@ -18,5 +18,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('test_result', views.TestResultList.as_view()),
     path('test_result/<int:pk>/', views.TestResultDetail.as_view()),
+    path('competence', views.CompetenceList.as_view()),
 ]
 
