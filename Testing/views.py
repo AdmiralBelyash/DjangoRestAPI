@@ -66,14 +66,18 @@ class QuestionsList(generics.ListCreateAPIView):
     serializer_class = serializers.QuestionsSerializer
 
     def get(self, request, *args, **kwargs):
-        if request.GET:
+        if request.GET.get('level'):
             questions = Questions.objects.filter(
                 level__pk=request.GET.get('level'),
                 theme__pk=request.GET.get('theme')
             )
             serializer = serializers.QuestionsSerializer(questions, many=True)
             return Response(serializer.data)
-        return self.list(request, *args, **kwargs)
+        questions = Questions.objects.filter(
+            theme__pk=request.GET.get('theme')
+        )
+        serializer = serializers.QuestionsSerializer(questions, many=True)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         data = request.data
