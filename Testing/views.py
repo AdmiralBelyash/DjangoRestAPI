@@ -1,3 +1,4 @@
+from multiprocessing.connection import answer_challenge
 import random
 from typing import Any
 
@@ -7,8 +8,18 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .testing_algorithm import TestAlgorithm
+
 from . import serializers
-from .models import Questions, Testing, Themes, Levels, Profile, TestingResult, Competence
+from .models import (
+    Questions, 
+    Themes, 
+    Levels, 
+    Profile, 
+    TestingResult, 
+    Competence,
+    TestSettings,
+    )
 
 
 class UserList(generics.ListAPIView):
@@ -51,16 +62,6 @@ class Logout(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class TestingList(generics.ListCreateAPIView):
-    queryset = Testing.objects.all()
-    serializer_class = serializers.TestingSerializer
-
-
-class TestingDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Testing.objects.all()
-    serializer_class = serializers.TestingSerializer
-
-
 class QuestionsList(generics.ListCreateAPIView):
     queryset = Questions.objects.all()
     serializer_class = serializers.QuestionsSerializer
@@ -69,7 +70,7 @@ class QuestionsList(generics.ListCreateAPIView):
         if request.GET.get('level'):
             questions = Questions.objects.filter(
                 level__pk=request.GET.get('level'),
-                theme__pk=request.GET.get('theme')
+                theme__competence_id=request.GET.get('competence')
             )
             serializer = serializers.QuestionsSerializer(questions, many=True)
             return Response(serializer.data)
@@ -167,3 +168,34 @@ class TestResultList(generics.ListCreateAPIView):
 class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TestingResult.objects.all()
     serializer_class = serializers.TestingResultSerializer
+
+
+class Test(APIView):
+    def get(self, request):
+        test_settings = TestSettings.objects.get(
+            user__id=request.data['user_id']
+        )
+        testing_algorithm = TestAlgorithm(
+            test_settings
+        )
+        questions = testing_algorithm.get_questions(
+            level=request.data['level']
+        )
+
+        next_level = ''
+
+        if request.data.get('answers'):
+            testing_algorithm.calculate_statistic(
+                answers_ids=request.data['answers']
+            )
+            next_level = testing_algorithm.is_next_level()
+        serializer = serializers.QuestionsSerializer(questions, many=True)
+        
+        return Response(
+            data={
+                'next_level': next_level,
+                'questions': serializer.data,
+            },
+            status=status.HTTP_200_OK
+        )
+        

@@ -1,4 +1,8 @@
 import datetime
+import json
+import schedule
+import time
+
 from typing import Union, List, Dict
 
 import django.utils.timezone
@@ -154,15 +158,11 @@ class UserAnswer(models.Model):
         verbose_name_plural = 'Ответы пользователя'
 
 
-class Testing(models.Model):
+class TestSettings(models.Model):
     user = models.ForeignKey(
         User,
         related_name='testing_user',
         on_delete=models.CASCADE
-    )
-    question = models.ManyToManyField(
-        Questions,
-        related_name='testing_question'
     )
     level = models.ForeignKey(
         Levels,
@@ -171,11 +171,12 @@ class Testing(models.Model):
         on_delete=models.CASCADE,
         default=2
     )
-    themes = models.ManyToManyField(
-        Themes,
-        related_name='themes',
-        help_text='Набор тем для теста',
-        default=None
+    competence = models.ForeignKey(
+        Competence,
+        related_name='competence',
+        help_text='Test Competence',
+        on_delete=models.CASCADE,
+        default=1
     )
     time = models.TimeField(
         'Время теста',
@@ -195,8 +196,8 @@ class Testing(models.Model):
         return reverse('model-detail-view', args=[str(self.id)])
 
     class Meta:
-        verbose_name = 'Тест'
-        verbose_name_plural = 'Тесты'
+        verbose_name = 'Test Setting'
+        verbose_name_plural = 'Test Settings'
 
 
 class Courses(models.Model):
@@ -232,14 +233,17 @@ class TestingResult(models.Model):
     )
     all_questions = models.IntegerField(
         name='question_summary',
+        default=0,
         help_text='All questions count'
     )
     wrong_questions = models.IntegerField(
         name='wrong_questions',
+        default=0,
         help_text='Wrong answers count'
     )
     skipped_questions = models.IntegerField(
         name='skipped_question_summary',
+        default=0,
         help_text='Skipped questions count',
         null=True,
     )
@@ -253,7 +257,28 @@ class TestingResult(models.Model):
         null=True,
         help_text='Time spent'
     )
+    answered_questions = models.CharField(
+        name='answered_questions',
+        null=True,
+        help_text='Questions answered by user'
+    )
+
+    def set_answered_questions(self, questions_ids):
+        self.answered_questions = json.dumps(questions_ids)
+
+    def get_answered_questions(self):
+        return json.loads(self.answered_questions)
+    
+    def clear_answered_questions(self):
+        print(f'Clearing answered questions for user {self.user_id.id}')
+        self.answered_questions = json.dumps('')
+
+    schedule.every().week.do(clear_answered_questions)
 
     class Meta:
         verbose_name = 'Результат тестирования'
         verbose_name_plural = 'Результаты тестирования'
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
