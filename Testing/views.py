@@ -65,13 +65,14 @@ class QuestionsList(generics.ListCreateAPIView):
     serializer_class = serializers.QuestionsSerializer
 
     def get(self, request, *args, **kwargs):
-        questions = Questions.objects.filter(
-            level__pk=request.GET.get('level'),
-            theme__pk=request.GET.get('theme')
-        )
-        serializer = serializers.QuestionsSerializer(questions, many=True)
-        return Response(serializer.data)
-
+        if request.GET:
+            questions = Questions.objects.filter(
+                level__pk=request.GET.get('level'),
+                theme__pk=request.GET.get('theme')
+            )
+            serializer = serializers.QuestionsSerializer(questions, many=True)
+            return Response(serializer.data)
+        super(self.get(request, *args, **kwargs))
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -83,6 +84,13 @@ class QuestionsList(generics.ListCreateAPIView):
         )
         serializer = serializers.QuestionsSerializer(new_question)
         return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        questions_to_delete = Questions.objects.filter(
+            id__in=request,
+        )
+        questions_to_delete.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class QuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -115,6 +123,11 @@ class ThemeList(generics.ListCreateAPIView):
 class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
+
+
+class LevelList(generics.ListCreateAPIView):
+    queryset = Levels.objects.all()
+    serializer_class = serializers.LevelsSerializer
 
 
 class TestResultList(generics.ListCreateAPIView):

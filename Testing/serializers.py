@@ -57,3 +57,9 @@ class TestingResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestingResult
         fields = '__all__'
+
+
+class LevelsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Levels
+        fields = '__all__'
