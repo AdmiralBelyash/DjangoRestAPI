@@ -92,7 +92,7 @@ class QuestionsList(generics.ListCreateAPIView):
 
     def delete(self, request, *args, **kwargs):
         questions_to_delete = Questions.objects.filter(
-            id__in=request,
+            id__in=request.data,
         )
         questions_to_delete.delete()
         return Response(status=status.HTTP_200_OK)
@@ -123,6 +123,13 @@ class QuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
 class ThemeList(generics.ListCreateAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
+
+    def delete(self, request, *args, **kwargs):
+        themes_to_delete = Themes.objects.filter(
+            id__in=request.data,
+        )
+        themes_to_delete.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class CompetenceList(generics.ListCreateAPIView):
