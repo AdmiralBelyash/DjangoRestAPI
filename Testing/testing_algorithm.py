@@ -2,12 +2,14 @@ import random
 
 from .models import (
     Competence,
-    Levels, 
-    Questions, 
-    Answers, 
-    TestingResult, 
-    TestSettings
+    Levels,
+    Questions,
+    Answers,
+    TestingResult,
+    TestSettings,
+    User
 )
+
 
 class TestAlgorithm:
     def __init__(
@@ -22,11 +24,11 @@ class TestAlgorithm:
 
     def get_questions(
         self,
-        level: Levels,
+        level: int,
     ):
         items = list(Questions.objects.filter(
-            competence=self.competence,
-            level=level
+            competence__id=self.competence.id,
+            level__id=level
         ))
 
         random_items = random.sample(items, self.questions_count)
@@ -34,7 +36,6 @@ class TestAlgorithm:
         self.testing_result.set_answered_questions(random_items)
 
         return random_items
-
 
     def calculate_statistic(
         self,
@@ -48,7 +49,7 @@ class TestAlgorithm:
             if not answer.is_correct:
                 self.testing_result.wrong_questions += 1
 
-        self.correct_answers = self.testing_result.all_questions - self.testing_result.wrong_questions 
+        self.correct_answers = self.testing_result.all_questions - self.testing_result.wrong_questions
 
     def is_next_level(self):
         return self.correct_answers >= self.test_settings.answers_pass_value
@@ -58,6 +59,10 @@ class TestAlgorithm:
 
     @property
     def testing_result(self):
-        return TestingResult.objects.get(
-            user_id__id=self.user_id
+        user = User.objects.get(
+            id=self.user_id
         )
+        testing_result, _ = TestingResult.objects.get_or_create(
+            user_id=user
+        )
+        return testing_result

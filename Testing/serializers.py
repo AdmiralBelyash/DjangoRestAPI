@@ -1,6 +1,5 @@
-from re import T
 from rest_framework import serializers
-from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Profile, TestingResult
+from .models import UserAnswer, Answers, Questions, Competence, Themes, Levels, Profile, TestingResult
 from django.contrib.auth.models import User, Group
 
 

@@ -1,10 +1,5 @@
-from multiprocessing.connection import answer_challenge
-import random
-from typing import Any
-
 from django.contrib.auth.models import User
-from rest_framework import generics, status, permissions
-from rest_framework.generics import get_object_or_404
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -173,13 +168,13 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
 class Test(APIView):
     def get(self, request):
         test_settings = TestSettings.objects.get(
-            user__id=request.data['user_id']
+            user__id=request.GET.get('user_id')
         )
         testing_algorithm = TestAlgorithm(
             test_settings
         )
         questions = testing_algorithm.get_questions(
-            level=request.data['level']
+            level=request.GET.get('level')
         )
 
         next_level = ''

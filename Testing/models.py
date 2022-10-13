@@ -1,7 +1,6 @@
 import datetime
 import json
 import schedule
-import time
 
 from typing import Union, List, Dict
 
@@ -102,6 +101,11 @@ class Questions(models.Model):
         Themes, on_delete=models.CASCADE,
         help_text='Тема вопроса'
     )
+    competence = models.ForeignKey(
+        Competence,
+        on_delete=models.CASCADE,
+        default=1
+    )
     level = models.ForeignKey(
         Levels,
         on_delete=models.CASCADE,
@@ -173,10 +177,10 @@ class TestSettings(models.Model):
     )
     competence = models.ForeignKey(
         Competence,
-        related_name='competence',
+        related_name='test_competence',
         help_text='Test Competence',
         on_delete=models.CASCADE,
-        default=1
+        default='Unknown'
     )
     time = models.TimeField(
         'Время теста',
@@ -189,6 +193,10 @@ class TestSettings(models.Model):
     next_level_score = models.IntegerField(
         'Количество баллов '
         'для перехода на следующий уровень',
+        default=0
+    )
+    questions_count = models.IntegerField(
+        'Questions in block count',
         default=0
     )
 
@@ -260,11 +268,15 @@ class TestingResult(models.Model):
     answered_questions = models.CharField(
         name='answered_questions',
         null=True,
-        help_text='Questions answered by user'
+        help_text='Questions answered by user',
+        max_length=256,
     )
 
-    def set_answered_questions(self, questions_ids):
-        self.answered_questions = json.dumps(questions_ids)
+    def set_answered_questions(self, questions):
+        question_ids = []
+        for question in questions:
+            question_ids.append(question.id)
+        self.answered_questions = json.dumps(question_ids)
 
     def get_answered_questions(self):
         return json.loads(self.answered_questions)
@@ -278,7 +290,3 @@ class TestingResult(models.Model):
     class Meta:
         verbose_name = 'Результат тестирования'
         verbose_name_plural = 'Результаты тестирования'
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
