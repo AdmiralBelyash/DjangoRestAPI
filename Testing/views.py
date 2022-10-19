@@ -124,6 +124,18 @@ class ThemeList(generics.ListCreateAPIView):
     queryset = Themes.objects.all()
     serializer_class = serializers.ThemesSerializer
 
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('competence'):
+            themes = Themes.objects.filter(
+                competence_id=request.GET.get('competence')
+            )
+            serializer = serializers.ThemesSerializer(themes, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        themes = Themes.objects.all()
+        serializer = serializers.ThemesSerializer(themes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
     def delete(self, request, *args, **kwargs):
         themes_to_delete = Themes.objects.filter(
             id__in=request.data,
