@@ -67,7 +67,7 @@ class Themes(models.Model):
     competence = models.ForeignKey(
         Competence,
         related_name='competence_theme',
-        on_delete=models.SET_DEFAULT,
+        on_delete=models.CASCADE,
         default='Unknown'
     )
 
