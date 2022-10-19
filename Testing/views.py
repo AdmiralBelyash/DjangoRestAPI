@@ -136,6 +136,13 @@ class CompetenceList(generics.ListCreateAPIView):
     queryset = Competence.objects.all()
     serializer_class = serializers.CompetenceSerializer
 
+    def delete(self, request, *args, **kwargs):
+        questions_to_delete = Questions.objects.filter(
+            id__in=request.data,
+        )
+        questions_to_delete.delete()
+        return Response(status=status.HTTP_200_OK)
+
 
 class CompetenceDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Competence.objects.all()
