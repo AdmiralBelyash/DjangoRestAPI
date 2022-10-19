@@ -1,6 +1,5 @@
 import datetime
 import json
-import schedule
 
 from typing import Union, List, Dict
 
@@ -284,8 +283,6 @@ class TestingResult(models.Model):
     def clear_answered_questions(self):
         print(f'Clearing answered questions for user {self.user_id.id}')
         self.answered_questions = json.dumps('')
-
-    schedule.every().week.do(clear_answered_questions)
 
     class Meta:
         verbose_name = 'Результат тестирования'
