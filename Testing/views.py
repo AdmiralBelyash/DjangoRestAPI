@@ -137,10 +137,10 @@ class CompetenceList(generics.ListCreateAPIView):
     serializer_class = serializers.CompetenceSerializer
 
     def delete(self, request, *args, **kwargs):
-        questions_to_delete = Questions.objects.filter(
+        competence_to_delete = Competence.objects.filter(
             id__in=request.data,
         )
-        questions_to_delete.delete()
+        competence_to_delete.delete()
         return Response(status=status.HTTP_200_OK)
 
 
