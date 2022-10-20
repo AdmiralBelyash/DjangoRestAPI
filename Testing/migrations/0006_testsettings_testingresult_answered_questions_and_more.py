@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('Testing', '0004_rename_question summary_testingresult_question_summary_and_more'),
+        ('Testing', '0005_alter_themes_competence'),
     ]
 
     operations = [

@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Testing', '0006_testsettings_questions_count'),
+        ('Testing', '0007_testsettings_questions_count'),
     ]
 
     operations = [

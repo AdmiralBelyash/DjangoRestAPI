@@ -270,6 +270,18 @@ class TestingResult(models.Model):
         help_text='Questions answered by user',
         max_length=256,
     )
+    competence = models.ForeignKey(
+        Competence,
+        name='competence',
+        default=2,
+        on_delete=models.CASCADE
+    )
+    level = models.ForeignKey(
+        Levels,
+        name='level',
+        default=2,
+        on_delete=models.CASCADE
+    )
 
     def set_answered_questions(self, questions):
         question_ids = []
