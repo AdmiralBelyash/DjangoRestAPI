@@ -218,7 +218,7 @@ class TestSettingsListView(APIView):
     def get(self, request):
         test_settings = TestSettings.objects.all()
 
-        serializer = TestSettingsSerializer(test_settings)
+        serializer = TestSettingsSerializer(test_settings, many=True)
 
         return Response(
             data=serializer.data,
