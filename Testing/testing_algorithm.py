@@ -20,7 +20,7 @@ class TestAlgorithm:
         self.competence = test_settings.competence
         self.questions_count = test_settings.questions_count
         self.test_settings = test_settings
-        self.user
+        self.user = user
         self.correct_answers = 0
 
     def get_questions(
