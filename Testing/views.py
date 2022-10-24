@@ -214,7 +214,7 @@ class Test(APIView):
         )
 
 
-class TestSettingsListView(APIView):
+class TestSettingsListView(generics.GenericAPIView):
     def get(self, request):
         test_settings = TestSettings.objects.all()
 
@@ -235,5 +235,20 @@ class TestSettingsListView(APIView):
             next_level_score=data['thresholdScore'],
             name=data['testName']
         )
+
+        return Response(status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        test_settings = self.get_object()
+        data = request.data
+
+        test_settings.name = data['name']
+        test_settings.level = Levels(data['level'])
+        test_settings.competence = Competence(data['competence'])
+        test_settings.time = data['testTime']
+        test_settings.next_level_score = data['thresholdScore']
+        test_settings.questions_count = data['questionsCount']
+
+        test_settings.save()
 
         return Response(status=status.HTTP_200_OK)
