@@ -25,10 +25,19 @@ class AnswersSerializer(serializers.ModelSerializer):
 
 class QuestionsSerializer(serializers.ModelSerializer):
     answers = AnswersSerializer(many=True)
+    level = serializers.CharField(source='level.name')
+    theme = serializers.CharField(source='theme.name')
 
     class Meta:
         model = Questions
-        fields = ['pk', 'question', 'type', 'level', 'theme', 'answers']
+        fields = [
+            'pk',
+            'question',
+            'type',
+            'level',
+            'theme',
+            'answers',
+        ]
 
 
 class CompetenceSerializer(serializers.ModelSerializer):
@@ -38,7 +47,7 @@ class CompetenceSerializer(serializers.ModelSerializer):
 
 
 class ThemesSerializer(serializers.ModelSerializer):
-    competence = serializers.RelatedField
+    competence = serializers.CharField(source='competence.name')
 
     class Meta:
         model = Themes
@@ -46,9 +55,22 @@ class ThemesSerializer(serializers.ModelSerializer):
 
 
 class TestingResultSerializer(serializers.ModelSerializer):
+    level = serializers.CharField(source='level.name')
+    competence = serializers.CharField(source='competence.name')
+
     class Meta:
         model = TestingResult
-        fields = '__all__'
+        fields = [
+            'user_id',
+            'level',
+            'competence',
+            'updated_time',
+            'all_questions',
+            'wrong_questions',
+            'skipped_questions',
+            'time_summary',
+            'answered_questions',
+        ]
 
 
 class LevelsSerializer(serializers.ModelSerializer):
@@ -58,7 +80,16 @@ class LevelsSerializer(serializers.ModelSerializer):
 
 
 class TestSettingsSerializer(serializers.ModelSerializer):
+    level = serializers.CharField(source='level.name')
+    competence = serializers.CharField(source='competence.name')
 
     class Meta:
         model = TestSettings
-        fields = '__all__'
+        fields = [
+            'name',
+            'level',
+            'competence',
+            'time',
+            'next_level_score',
+            'questions_count',
+        ]
