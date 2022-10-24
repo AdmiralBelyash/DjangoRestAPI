@@ -11,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
+    current_level = serializers.CharField(source='current_level.name')
 
     class Meta:
         model = Profile
