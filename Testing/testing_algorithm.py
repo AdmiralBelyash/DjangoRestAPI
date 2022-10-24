@@ -15,11 +15,12 @@ class TestAlgorithm:
     def __init__(
         self,
         test_settings: TestSettings,
+        user: User
     ):
         self.competence = test_settings.competence
         self.questions_count = test_settings.questions_count
-        self.user_id = test_settings.user.id
         self.test_settings = test_settings
+        self.user
         self.correct_answers = 0
 
     def get_questions(
@@ -52,7 +53,7 @@ class TestAlgorithm:
         self.correct_answers = self.testing_result.all_questions - self.testing_result.wrong_questions
 
     def is_next_level(self):
-        return self.correct_answers >= self.test_settings.answers_pass_value
+        return self.correct_answers >= self.test_settings.next_level_score
 
     def get_statistics(self):
         return self.testing_result
@@ -60,7 +61,7 @@ class TestAlgorithm:
     @property
     def testing_result(self):
         user = User.objects.get(
-            id=self.user_id
+            id=self.user.id
         )
         testing_result, _ = TestingResult.objects.get_or_create(
             user_id=user

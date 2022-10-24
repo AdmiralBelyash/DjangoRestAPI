@@ -190,7 +190,8 @@ class Test(APIView):
             id=request.GET.get('id')
         )
         testing_algorithm = TestAlgorithm(
-            test_settings
+            test_settings,
+            request.user
         )
         questions = testing_algorithm.get_questions(
             level=request.GET.get('level')
