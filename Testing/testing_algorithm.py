@@ -20,6 +20,7 @@ class TestAlgorithm:
         self.competence = test_settings.competence
         self.questions_count = test_settings.questions_count
         self.test_settings = test_settings
+        self.level = test_settings.level
         self.user = user
         self.correct_answers = 0
 
@@ -27,6 +28,8 @@ class TestAlgorithm:
         self,
         level: int,
     ):
+        if not level:
+            level = self.level.id
         items = list(Questions.objects.filter(
             competence__id=self.competence.id,
             level__id=level
