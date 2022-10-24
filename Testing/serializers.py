@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Profile, TestingResult
+from .models import UserAnswer, Answers, Questions, Competence, Themes, Levels, Profile, TestingResult
 from django.contrib.auth.models import User, Group
 
 
@@ -29,14 +29,6 @@ class QuestionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Questions
         fields = ['pk', 'question', 'type', 'level', 'theme', 'answers']
-
-
-class TestingSerializer(serializers.ModelSerializer):
-    question = QuestionsSerializer(many=True)
-
-    class Meta:
-        model = Testing
-        fields = ['pk', 'question', 'time']
 
 
 class CompetenceSerializer(serializers.ModelSerializer):

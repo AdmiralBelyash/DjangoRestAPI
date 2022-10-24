@@ -1,4 +1,6 @@
 import datetime
+import json
+
 from typing import Union, List, Dict
 
 import django.utils.timezone
@@ -98,6 +100,11 @@ class Questions(models.Model):
         Themes, on_delete=models.CASCADE,
         help_text='Тема вопроса'
     )
+    competence = models.ForeignKey(
+        Competence,
+        on_delete=models.CASCADE,
+        default=1
+    )
     level = models.ForeignKey(
         Levels,
         on_delete=models.CASCADE,
@@ -154,15 +161,11 @@ class UserAnswer(models.Model):
         verbose_name_plural = 'Ответы пользователя'
 
 
-class Testing(models.Model):
+class TestSettings(models.Model):
     user = models.ForeignKey(
         User,
         related_name='testing_user',
         on_delete=models.CASCADE
-    )
-    question = models.ManyToManyField(
-        Questions,
-        related_name='testing_question'
     )
     level = models.ForeignKey(
         Levels,
@@ -171,11 +174,12 @@ class Testing(models.Model):
         on_delete=models.CASCADE,
         default=2
     )
-    themes = models.ManyToManyField(
-        Themes,
-        related_name='themes',
-        help_text='Набор тем для теста',
-        default=None
+    competence = models.ForeignKey(
+        Competence,
+        related_name='test_competence',
+        help_text='Test Competence',
+        on_delete=models.CASCADE,
+        default='Unknown'
     )
     time = models.TimeField(
         'Время теста',
@@ -190,13 +194,17 @@ class Testing(models.Model):
         'для перехода на следующий уровень',
         default=0
     )
+    questions_count = models.IntegerField(
+        'Questions in block count',
+        default=0
+    )
 
     def get_absolute_url(self):
         return reverse('model-detail-view', args=[str(self.id)])
 
     class Meta:
-        verbose_name = 'Тест'
-        verbose_name_plural = 'Тесты'
+        verbose_name = 'Test Setting'
+        verbose_name_plural = 'Test Settings'
 
 
 class Courses(models.Model):
@@ -232,14 +240,17 @@ class TestingResult(models.Model):
     )
     all_questions = models.IntegerField(
         name='question_summary',
+        default=0,
         help_text='All questions count'
     )
     wrong_questions = models.IntegerField(
         name='wrong_questions',
+        default=0,
         help_text='Wrong answers count'
     )
     skipped_questions = models.IntegerField(
         name='skipped_question_summary',
+        default=0,
         help_text='Skipped questions count',
         null=True,
     )
@@ -253,6 +264,37 @@ class TestingResult(models.Model):
         null=True,
         help_text='Time spent'
     )
+    answered_questions = models.CharField(
+        name='answered_questions',
+        null=True,
+        help_text='Questions answered by user',
+        max_length=256,
+    )
+    competence = models.ForeignKey(
+        Competence,
+        name='competence',
+        default=2,
+        on_delete=models.CASCADE
+    )
+    level = models.ForeignKey(
+        Levels,
+        name='level',
+        default=2,
+        on_delete=models.CASCADE
+    )
+
+    def set_answered_questions(self, questions):
+        question_ids = []
+        for question in questions:
+            question_ids.append(question.id)
+        self.answered_questions = json.dumps(question_ids)
+
+    def get_answered_questions(self):
+        return json.loads(self.answered_questions)
+    
+    def clear_answered_questions(self):
+        print(f'Clearing answered questions for user {self.user_id.id}')
+        self.answered_questions = json.dumps('')
 
     class Meta:
         verbose_name = 'Результат тестирования'

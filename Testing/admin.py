@@ -1,16 +1,14 @@
 from django.contrib import admin
-from .models import UserAnswer, Answers, Questions, Testing, Competence, Themes, Levels, Courses, Profile
-from django.contrib.auth.models import User, Group
+from .models import UserAnswer, Answers, Questions, Competence, Themes, Levels, Courses, Profile, TestSettings, TestingResult
 
 admin.site.register(UserAnswer)
-# admin.site.register(Answers)
-# admin.site.register(Questions)
 admin.site.register(Competence)
 admin.site.register(Themes)
 admin.site.register(Levels)
-admin.site.register(Testing)
 admin.site.register(Courses)
 admin.site.register(Profile)
+admin.site.register(TestSettings)
+admin.site.register(TestingResult)
 
 
 class AnswerInline(admin.TabularInline):
