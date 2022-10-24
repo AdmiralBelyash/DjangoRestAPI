@@ -162,10 +162,9 @@ class UserAnswer(models.Model):
 
 
 class TestSettings(models.Model):
-    user = models.ForeignKey(
-        User,
-        related_name='testing_user',
-        on_delete=models.CASCADE
+    name = models.CharField(
+        'Test name',
+        max_length=200,
     )
     level = models.ForeignKey(
         Levels,
@@ -184,10 +183,6 @@ class TestSettings(models.Model):
     time = models.TimeField(
         'Время теста',
         default=datetime.time.fromisoformat('00:00:00')
-    )
-    answers_pass_value = models.IntegerField(
-        'Количество вопросов для перехода на следующий уровень',
-        default=0
     )
     next_level_score = models.IntegerField(
         'Количество баллов '

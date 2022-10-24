@@ -216,13 +216,22 @@ class Test(APIView):
 
 class TestSettingsListView(APIView):
     def get(self, request):
-        test_settings = TestSettings.objects.filter(
-            user__id=request.GET.get('user_id')
-        )
+        test_settings = TestSettings.objects.all()
 
         serializer = TestSettingsSerializer(test_settings)
 
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
+        )
+
+    def post(self, request):
+        data = request.data
+        test_settings = TestSettings.objects.create(
+            competence=Competence(data['competence']),
+            level=Levels(data['level']),
+            time=data['testTime'],
+            questions_count=data['questionsCount'],
+            next_level_score=data['thresholdScore'],
+            test_name=data['testName']
         )
