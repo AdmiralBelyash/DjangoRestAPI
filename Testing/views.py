@@ -233,5 +233,5 @@ class TestSettingsListView(APIView):
             time=data['testTime'],
             questions_count=data['questionsCount'],
             next_level_score=data['thresholdScore'],
-            test_name=data['testName']
+            name=data['testName']
         )
