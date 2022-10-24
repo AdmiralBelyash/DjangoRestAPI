@@ -87,6 +87,7 @@ class TestSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestSettings
         fields = [
+            'id',
             'name',
             'level',
             'competence',
