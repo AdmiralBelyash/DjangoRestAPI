@@ -215,6 +215,9 @@ class Test(APIView):
 
 
 class TestSettingsListView(generics.GenericAPIView):
+    serializer_class = TestSettingsSerializer
+    queryset = TestSettings.objects.all()
+
     def get(self, request):
         test_settings = TestSettings.objects.all()
 
@@ -227,7 +230,7 @@ class TestSettingsListView(generics.GenericAPIView):
 
     def post(self, request):
         data = request.data
-        test_settings = TestSettings.objects.create(
+        TestSettings.objects.create(
             competence=Competence(data['competence']),
             level=Levels(data['level']),
             time=data['testTime'],

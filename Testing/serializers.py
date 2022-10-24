@@ -47,7 +47,7 @@ class CompetenceSerializer(serializers.ModelSerializer):
 
 
 class ThemesSerializer(serializers.ModelSerializer):
-    competence = serializers.CharField(source='competence.name')
+    competence = serializers.CharField(source='competence.competence')
 
     class Meta:
         model = Themes
@@ -56,7 +56,7 @@ class ThemesSerializer(serializers.ModelSerializer):
 
 class TestingResultSerializer(serializers.ModelSerializer):
     level = serializers.CharField(source='level.name')
-    competence = serializers.CharField(source='competence.name')
+    competence = serializers.CharField(source='competence.competence')
 
     class Meta:
         model = TestingResult
@@ -81,7 +81,7 @@ class LevelsSerializer(serializers.ModelSerializer):
 
 class TestSettingsSerializer(serializers.ModelSerializer):
     level = serializers.CharField(source='level.name')
-    competence = serializers.CharField(source='competence.name')
+    competence = serializers.CharField(source='competence.competence')
 
     class Meta:
         model = TestSettings
