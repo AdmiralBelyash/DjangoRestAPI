@@ -3,18 +3,19 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .serializers import TestSettingsSerializer
 from .testing_algorithm import TestAlgorithm
 
 from . import serializers
 from .models import (
-    Questions, 
-    Themes, 
-    Levels, 
-    Profile, 
-    TestingResult, 
+    Questions,
+    Themes,
+    Levels,
+    Profile,
+    TestingResult,
     Competence,
     TestSettings,
-    )
+)
 
 
 class UserList(generics.ListAPIView):
@@ -131,7 +132,6 @@ class ThemeList(generics.ListCreateAPIView):
         serializer = serializers.ThemesSerializer(themes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     def delete(self, request, *args, **kwargs):
         themes_to_delete = Themes.objects.filter(
             id__in=request.data,
@@ -187,7 +187,7 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
 class Test(APIView):
     def get(self, request):
         test_settings = TestSettings.objects.get(
-            user__id=request.GET.get('user_id')
+            id=request.GET.get('id')
         )
         testing_algorithm = TestAlgorithm(
             test_settings
@@ -204,7 +204,7 @@ class Test(APIView):
             )
             next_level = testing_algorithm.is_next_level()
         serializer = serializers.QuestionsSerializer(questions, many=True)
-        
+
         return Response(
             data={
                 'next_level': next_level,
@@ -212,4 +212,17 @@ class Test(APIView):
             },
             status=status.HTTP_200_OK
         )
-        
+
+
+class TestSettingsListView(APIView):
+    def get(self, request):
+        test_settings = TestSettings.objects.filter(
+            user__id=request.GET.get('user_id')
+        )
+
+        serializer = TestSettingsSerializer(test_settings)
+
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )

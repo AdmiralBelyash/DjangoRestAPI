@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserAnswer, Answers, Questions, Competence, Themes, Levels, Profile, TestingResult
+from .models import UserAnswer, Answers, Questions, Competence, Themes, Levels, Profile, TestingResult, TestSettings
 from django.contrib.auth.models import User, Group
 
 
@@ -54,4 +54,11 @@ class TestingResultSerializer(serializers.ModelSerializer):
 class LevelsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Levels
+        fields = '__all__'
+
+
+class TestSettingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TestSettings
         fields = '__all__'
