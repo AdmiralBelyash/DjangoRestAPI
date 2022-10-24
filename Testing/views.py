@@ -235,3 +235,5 @@ class TestSettingsListView(APIView):
             next_level_score=data['thresholdScore'],
             name=data['testName']
         )
+
+        return Response(status=status.HTTP_200_OK)
