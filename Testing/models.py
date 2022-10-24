@@ -165,6 +165,7 @@ class TestSettings(models.Model):
     name = models.CharField(
         'Test name',
         max_length=200,
+        default=f'Test'
     )
     level = models.ForeignKey(
         Levels,
