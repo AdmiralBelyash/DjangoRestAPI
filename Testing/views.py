@@ -26,7 +26,9 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = serializers.UserSerializer
 
     def post(self, request, *args, **kwargs):
-        User.objects.create()
+        User.objects.create(
+
+        )
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()

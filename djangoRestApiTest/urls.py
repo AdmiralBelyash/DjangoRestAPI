@@ -17,4 +17,5 @@ urlpatterns = [
     path('test', views.Test.as_view()),
     path('test_settings', views.TestSettingsListView.as_view()),
     path('login/', views.LoginView.as_view()),
+    path('auth/', include('django.contrib.auth.urls')),
 ]
