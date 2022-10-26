@@ -30,6 +30,11 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
 
+    def get_object(self):
+        return Profile.objects.get(
+            user__id=self.request.user.id
+        )
+
     def destroy(self, request, *args, **kwargs):
         profile_object = self.get_object()
         profile_object.user.delete()

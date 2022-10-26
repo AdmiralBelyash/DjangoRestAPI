@@ -5,8 +5,7 @@ from Testing import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users', views.UserList.as_view()),
-    path('users/<int:pk>', views.UserDetail.as_view()),
+    path('profile', views.UserDetail.as_view()),
     path('questions', views.QuestionsList.as_view()),
     path('questions/<int:pk>', views.QuestionsDetail.as_view()),
     path('themes', views.ThemeList.as_view()),
