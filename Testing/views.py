@@ -277,4 +277,4 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
+        return Response(request.session._get_or_create_session_key(), status=status.HTTP_202_ACCEPTED, headers={'Access-Control-Allow-Headers': 'Set-Cookie'})
