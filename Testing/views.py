@@ -21,10 +21,12 @@ from .models import (
 )
 
 
-class UserList(generics.ListAPIView):
+class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
+    def post(self, request, *args, **kwargs):
+        User.objects.create()
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()

@@ -119,7 +119,7 @@ class LoginSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         # Take username and password from request
-        username = attrs.get('email')
+        username = attrs.get('username')
         password = attrs.get('password')
 
         if username and password:
