@@ -11,14 +11,11 @@ urlpatterns = [
     path('questions/<int:pk>', views.QuestionsDetail.as_view()),
     path('themes', views.ThemeList.as_view()),
     path('themes/<int:pk>', views.ThemeDetail.as_view()),
-    path('auth', include('djoser.urls')),
-    path('auth/token', obtain_auth_token, name='token'),
-    path('api-auth', include('rest_framework.urls')),
     path('test_result', views.TestResultList.as_view()),
     path('test_result/<int:pk>', views.TestResultDetail.as_view()),
     path('competence', views.CompetenceList.as_view()),
     path('level', views.LevelList.as_view()),
     path('test', views.Test.as_view()),
     path('test_settings', views.TestSettingsListView.as_view()),
+    path('login/', views.LoginView.as_view()),
 ]
-

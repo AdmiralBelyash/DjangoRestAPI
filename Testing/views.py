@@ -1,5 +1,6 @@
+from django.contrib.auth import login
 from django.contrib.auth.models import User
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -52,12 +53,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = serializers.ProfileSerializer(profile_object)
 
         return Response(serializer.data)
-
-
-class Logout(APIView):
-    def get(self, request, format=None):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
 
 
 class QuestionsList(generics.ListCreateAPIView):
@@ -258,3 +253,19 @@ class TestSettingsListView(generics.GenericAPIView):
         test_settings.save()
 
         return Response(status=status.HTTP_200_OK)
+
+
+class LoginView(APIView):
+    # This view should be accessible also for unauthenticated users.
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = serializers.LoginSerializer(
+            data=self.request.data,
+            context={
+                'request': self.request
+            })
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return Response(None, status=status.HTTP_202_ACCEPTED)
