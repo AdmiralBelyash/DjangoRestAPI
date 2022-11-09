@@ -63,6 +63,8 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    current_level = serializers.CharField(source='level.name')
+
     class Meta:
         model = User
         fields = ['pk', 'first_name', 'last_name', 'email', 'current_level', 'post', 'address', 'phone_number']
