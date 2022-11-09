@@ -239,11 +239,9 @@ class Test(APIView):
 
     def post(self, request):
 
-        self.testing_algorithm.calculate_statistic(
+        next_level = self.testing_algorithm.calculate_statistic(
             answers_ids=request.data['answers']
         )
-
-        next_level = self.testing_algorithm.is_next_level()
 
         questions, level = self.testing_algorithm.get_questions(next_level, request.data['level'])
         serializer = serializers.QuestionsSerializer(questions, many=True)
