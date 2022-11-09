@@ -230,6 +230,7 @@ class Test(APIView):
     def get(self, request):
         questions, level = self.testing_algorithm.get_start_questions()
         self.level = level
+        print(self.level)
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
         return Response(
@@ -246,8 +247,10 @@ class Test(APIView):
             )
             next_level = self.testing_algorithm.is_next_level()
 
+        print(self.level)
         questions, level = self.testing_algorithm.get_questions(next_level, self.level)
         self.level = level
+        print(self.level)
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
         return Response(
