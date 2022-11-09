@@ -63,6 +63,7 @@ class TestAlgorithm:
         answers = Answers.objects.filter(
             id__in=answers_ids
         )
+        print(answers.count())
         self.testing_result.question_summary = answers.count()
         for answer in answers:
             if not answer.is_correct:
