@@ -17,10 +17,10 @@ class TestAlgorithm:
         test_settings: TestSettings,
         user: User
     ):
-        self.competence = test_settings.competence
+        self.competence = test_settings.competence_id
         self.questions_count = test_settings.questions_count
         self.test_settings = test_settings
-        self.level = test_settings.level
+        self.level = test_settings.level_id
         self.user = user
         self.correct_answers = 0
 
