@@ -224,17 +224,17 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class Test(APIView):
     permission_classes = (IsAuthenticated,)
-    #renderer_classes = (UserJSONRenderer,)
-    level = None
 
     def get(self, request):
         questions, level = self.testing_algorithm.get_start_questions()
-        self.level = level
         print(self.level, 'One')
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
         return Response(
-            data=serializer.data,
+            data={
+                'questions': serializer.data,
+                'level': level
+            },
             status=status.HTTP_200_OK
         )
 
@@ -247,14 +247,14 @@ class Test(APIView):
             )
             next_level = self.testing_algorithm.is_next_level()
 
-        print(self.level, 'Two')
-        questions, level = self.testing_algorithm.get_questions(next_level)
-        self.level = level
-        print(self.level, 'Three')
+        questions, level = self.testing_algorithm.get_questions(next_level, request.data['level'])
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
-        yield Response(
-            data=serializer.data,
+        return Response(
+            data={
+                'questions': serializer.data,
+                'level': level,
+            },
             status=status.HTTP_200_OK
         )
 
