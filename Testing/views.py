@@ -224,33 +224,47 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
 class Test(APIView):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (UserJSONRenderer,)
+    level = None
 
     def get(self, request):
-        test_settings = TestSettings.objects.get(
-            id=request.GET.get('id')
-        )
-        testing_algorithm = TestAlgorithm(
-            test_settings,
-            request.user
-        )
-
-        next_level = False
-
-        if request.data.get('answers'):
-            testing_algorithm.calculate_statistic(
-                answers_ids=request.data['answers']
-            )
-            next_level = testing_algorithm.is_next_level()
-
-        questions = testing_algorithm.get_questions(next_level)
+        questions, level = self.testing_algorithm.get_start_questions()
+        self.level = level
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
         return Response(
-            data={
-                'next_level': next_level,
-                'questions': serializer.data,
-            },
+            data=serializer.data,
             status=status.HTTP_200_OK
+        )
+
+    def post(self, request):
+        next_level = False
+
+        if request.data.get('answers'):
+            self.testing_algorithm.calculate_statistic(
+                answers_ids=request.data['answers']
+            )
+            next_level = self.testing_algorithm.is_next_level()
+
+        questions, level = self.testing_algorithm.get_questions(next_level, self.level)
+        self.level = level
+        serializer = serializers.QuestionsSerializer(questions, many=True)
+
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+    @property
+    def test_settings(self):
+        return TestSettings.objects.get(
+            id=self.request.GET.get('id')
+        )
+
+    @property
+    def testing_algorithm(self):
+        return TestAlgorithm(
+            self.test_settings,
+            self.request.user
         )
 
 

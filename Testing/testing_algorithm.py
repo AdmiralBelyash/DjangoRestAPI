@@ -24,13 +24,24 @@ class TestAlgorithm:
         self.user = user
         self.correct_answers = 0
 
-    def get_questions(
+    def get_start_questions(
         self,
-        next_level: bool
     ):
-        level = self.level.id
+        items = list(Questions.objects.filter(
+            competence__id=self.competence.id,
+            level__id=self.level.id
+        ))
+
+        random_items = random.sample(items, self.questions_count)
+
+        self.testing_result.set_answered_questions(random_items)
+
+        return random_items, self.level.id
+
+    def get_questions(self, next_level, level):
         if next_level:
-            level = self.level.id + 1
+            level += 1
+
         items = list(Questions.objects.filter(
             competence__id=self.competence.id,
             level__id=level
@@ -40,7 +51,7 @@ class TestAlgorithm:
 
         self.testing_result.set_answered_questions(random_items)
 
-        return random_items
+        return random_items, level
 
     def calculate_statistic(
         self,
