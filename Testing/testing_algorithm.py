@@ -65,12 +65,15 @@ class TestAlgorithm:
         )
         print(answers.count())
         self.testing_result.question_summary = answers.count()
+        print(self.testing_result.question_summary, 'ALL')
         for answer in answers:
             if not answer.is_correct:
                 self.testing_result.wrong_questions += 1
         self.testing_result.save()
+        print(self.testing_result.wrong_questions, 'WRONG')
 
         self.correct_answers = self.testing_result.question_summary - self.testing_result.wrong_questions
+        print(self.correct_answers, 'CORRECT')
         return self.correct_answers >= self.test_settings.next_level_score
 
     def get_statistics(self):

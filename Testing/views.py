@@ -243,6 +243,8 @@ class Test(APIView):
             answers_ids=request.data['answers']
         )
 
+        print(next_level)
+
         questions, level = self.testing_algorithm.get_questions(next_level, request.data['level'])
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
