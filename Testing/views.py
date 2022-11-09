@@ -226,7 +226,6 @@ class Test(APIView):
     renderer_classes = (UserJSONRenderer,)
 
     def get(self, request):
-        print(request.user)
         test_settings = TestSettings.objects.get(
             id=request.GET.get('id')
         )
@@ -234,17 +233,16 @@ class Test(APIView):
             test_settings,
             request.user
         )
-        questions = testing_algorithm.get_questions(
-            level=request.GET.get('level')
-        )
 
-        next_level = ''
+        next_level = False
 
         if request.data.get('answers'):
             testing_algorithm.calculate_statistic(
                 answers_ids=request.data['answers']
             )
             next_level = testing_algorithm.is_next_level()
+
+        questions = testing_algorithm.get_questions(next_level)
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
         return Response(

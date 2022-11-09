@@ -26,10 +26,11 @@ class TestAlgorithm:
 
     def get_questions(
         self,
-        level: int,
+        next_level: bool
     ):
-        if not level:
-            level = self.level.id
+        level = self.level.id
+        if next_level:
+            level = self.level.id + 1
         items = list(Questions.objects.filter(
             competence__id=self.competence.id,
             level__id=level
