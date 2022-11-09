@@ -1,3 +1,4 @@
+from django.template.loaders import cached
 from rest_framework import generics, status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -223,7 +224,7 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class Test(APIView):
     permission_classes = (IsAuthenticated,)
-    renderer_classes = (UserJSONRenderer,)
+    #renderer_classes = (UserJSONRenderer,)
     level = None
 
     def get(self, request):
