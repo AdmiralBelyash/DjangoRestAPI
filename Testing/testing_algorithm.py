@@ -52,7 +52,7 @@ class TestAlgorithm:
 
         random_items = random.sample(items, self.questions_count)
 
-        self.testing_result.set_answered_questions(random_items)
+        self.testing_result().set_answered_questions(random_items)
 
         return random_items, level
 
@@ -64,20 +64,20 @@ class TestAlgorithm:
             id__in=answers_ids
         )
         print(answers.count())
-        self.testing_result.question_summary = answers.count()
-        print(self.testing_result.question_summary, 'ALL')
+        self.testing_result().question_summary = answers.count()
+        print(self.testing_result().question_summary, 'ALL')
         for answer in answers:
             if not answer.is_correct:
-                self.testing_result.wrong_questions += 1
-        self.testing_result.save()
-        print(self.testing_result.wrong_questions, 'WRONG')
+                self.testing_result().wrong_questions += 1
+        self.testing_result().save()
+        print(self.testing_result().wrong_questions, 'WRONG')
 
-        self.correct_answers = self.testing_result.question_summary - self.testing_result.wrong_questions
+        self.correct_answers = self.testing_result().question_summary - self.testing_result().wrong_questions
         print(self.correct_answers, 'CORRECT')
         return self.correct_answers >= self.test_settings.next_level_score
 
     def get_statistics(self):
-        return self.testing_result
+        return self.testing_result()
 
     def testing_result(self):
         user = User.objects.get(
