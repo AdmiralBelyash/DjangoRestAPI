@@ -60,7 +60,7 @@ class TestAlgorithm:
         answers = Answers.objects.filter(
             id__in=answers_ids
         )
-        self.testing_result.all_questions = answers.count()
+        self.testing_result.question_summary = answers.count()
         for answer in answers:
             if not answer.is_correct:
                 self.testing_result.wrong_questions += 1
