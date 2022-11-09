@@ -79,7 +79,6 @@ class TestAlgorithm:
     def get_statistics(self):
         return self.testing_result
 
-    @property
     def testing_result(self):
         user = User.objects.get(
             id=self.user.id
