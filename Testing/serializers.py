@@ -63,7 +63,7 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    current_level = serializers.CharField(source='level.name')
+    current_level = serializers.CharField(source='current_level.name')
 
     class Meta:
         model = User
