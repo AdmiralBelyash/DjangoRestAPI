@@ -222,7 +222,11 @@ class TestResultDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class Test(APIView):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (UserJSONRenderer,)
+
     def get(self, request):
+        print(request.user)
         test_settings = TestSettings.objects.get(
             id=request.GET.get('id')
         )
