@@ -20,6 +20,7 @@ urlpatterns = [
     path('level', views.LevelList.as_view()),
     path('test', views.Test.as_view()),
     path('test_settings', views.TestSettingsListView.as_view()),
+    path('test_settings/<int:pk>', views.TestSettingsDetail.as_view()),
     path('users/', views.UserList.as_view()),
     path('users/login/', LoginAPIView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

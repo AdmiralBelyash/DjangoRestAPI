@@ -258,7 +258,6 @@ class TestSettingsListView(generics.GenericAPIView):
 
     def get(self, request):
         test_settings = TestSettings.objects.all()
-
         serializer = TestSettingsSerializer(test_settings, many=True)
 
         return Response(
@@ -293,3 +292,8 @@ class TestSettingsListView(generics.GenericAPIView):
         test_settings.save()
 
         return Response(status=status.HTTP_200_OK)
+
+
+class TestSettingsDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TestSettingsSerializer
+    queryset = TestSettings.objects.all()
