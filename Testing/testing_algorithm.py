@@ -34,7 +34,7 @@ class TestAlgorithm:
 
         random_items = random.sample(items, self.questions_count)
 
-        self.testing_result.set_answered_questions(random_items)
+        self.testing_result().set_answered_questions(random_items)
 
         return random_items, self.level.id
 
