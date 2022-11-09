@@ -138,10 +138,8 @@ class LevelsSerializer(serializers.ModelSerializer):
 
 
 class TestSettingsSerializer(serializers.ModelSerializer):
-    level = serializers.CharField(source='level.name')
-    level_id = serializers.CharField(source='level.id')
-    competence = serializers.CharField(source='competence.competence')
-    competence_id = serializers.CharField(source='competence.id')
+    level = serializers.CharField(source='level_id.name', read_only=True)
+    competence = serializers.CharField(source='competence_id.competence', read_only=True)
 
     class Meta:
         model = TestSettings

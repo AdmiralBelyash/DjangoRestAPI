@@ -204,14 +204,14 @@ class TestSettings(models.Model):
         max_length=200,
         default=f'Test'
     )
-    level = models.ForeignKey(
+    level_id = models.ForeignKey(
         Levels,
         related_name='start_level',
         help_text='Начальный уровень сложности',
         on_delete=models.CASCADE,
         default=2
     )
-    competence = models.ForeignKey(
+    competence_id = models.ForeignKey(
         Competence,
         related_name='test_competence',
         help_text='Test Competence',
