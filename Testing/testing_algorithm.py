@@ -38,7 +38,10 @@ class TestAlgorithm:
 
         return random_items, self.level.id
 
-    def get_questions(self, next_level, level):
+    def get_questions(self, next_level, level=None):
+        if not level:
+            level = self.level.id
+
         if next_level:
             level += 1
 

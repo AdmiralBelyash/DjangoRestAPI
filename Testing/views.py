@@ -248,12 +248,12 @@ class Test(APIView):
             next_level = self.testing_algorithm.is_next_level()
 
         print(self.level, 'Two')
-        questions, level = self.testing_algorithm.get_questions(next_level, self.level)
+        questions, level = self.testing_algorithm.get_questions(next_level)
         self.level = level
         print(self.level, 'Three')
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
-        return Response(
+        yield Response(
             data=serializer.data,
             status=status.HTTP_200_OK
         )
