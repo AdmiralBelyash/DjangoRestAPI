@@ -1,11 +1,15 @@
 from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from Testing import views
+from Testing.views import RegistrationAPIView, LoginAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('profile', views.UserDetail.as_view()),
+    path('me', views.UserRetrieveUpdateAPIView.as_view()),
     path('questions', views.QuestionsList.as_view()),
     path('questions/<int:pk>', views.QuestionsDetail.as_view()),
     path('themes', views.ThemeList.as_view()),
@@ -16,6 +20,8 @@ urlpatterns = [
     path('level', views.LevelList.as_view()),
     path('test', views.Test.as_view()),
     path('test_settings', views.TestSettingsListView.as_view()),
-    path('login/', views.LoginView.as_view()),
-    path('auth/', include('django.contrib.auth.urls')),
+    path('users/', views.UserList.as_view()),
+    path('users/login/', LoginAPIView.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

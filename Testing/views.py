@@ -1,47 +1,83 @@
-from django.contrib.auth import login
-from django.contrib.auth.models import User
-from rest_framework import generics, status, permissions
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, status
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .serializers import TestSettingsSerializer
-from .testing_algorithm import TestAlgorithm
 
 from . import serializers
 from .models import (
     Questions,
     Themes,
     Levels,
-    Profile,
+    User,
     TestingResult,
     Competence,
     TestSettings,
 )
+from .renderers import UserJSONRenderer
+from .serializers import TestSettingsSerializer, RegistrationSerializer, LoginSerializer, UserSerializer
+from .testing_algorithm import TestAlgorithm
+
+
+class RegistrationAPIView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RegistrationSerializer
+
+    def post(self, request):
+        user = request.data.get('user', {})
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class LoginAPIView(APIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (UserJSONRenderer,)
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
-    def post(self, request, *args, **kwargs):
-        User.objects.create(
 
+class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (UserJSONRenderer,)
+    serializer_class = UserSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        serializer_data = request.data.get('user', {})
+
+        # Паттерн сериализации, валидирования и сохранения - то, о чем говорили
+        serializer = self.serializer_class(
+            request.user, data=serializer_data, partial=True
         )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = serializers.ProfileSerializer
-
-    def get_object(self):
-        return Profile.objects.get(
-            user__id=self.request.user.id
-        )
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
 
     def destroy(self, request, *args, **kwargs):
         profile_object = self.get_object()
-        profile_object.user.delete()
         profile_object.delete()
         return Response(status=status.HTTP_200_OK)
 
@@ -50,16 +86,14 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         data = request.data
 
         profile_object.post = data['post']
-        profile_object.user.first_name = data['user']['first_name']
-        profile_object.user.last_name = data['user']['last_name']
-        profile_object.user.email = data['user']['email']
+        profile_object.first_name = data['user']['first_name']
+        profile_object.last_name = data['user']['last_name']
+        profile_object.email = data['user']['email']
         profile_object.phone_number = data['phone_number']
         profile_object.address = data['address']
-        profile_object.current_level = Levels(data['current_level'])
 
         profile_object.save()
-        profile_object.user.save()
-        serializer = serializers.ProfileSerializer(profile_object)
+        serializer = serializers.UserSerializer(profile_object)
 
         return Response(serializer.data)
 
@@ -262,19 +296,3 @@ class TestSettingsListView(generics.GenericAPIView):
         test_settings.save()
 
         return Response(status=status.HTTP_200_OK)
-
-
-class LoginView(APIView):
-    # This view should be accessible also for unauthenticated users.
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        serializer = serializers.LoginSerializer(
-            data=self.request.data,
-            context={
-                'request': self.request
-            })
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return Response(request.session._get_or_create_session_key(), status=status.HTTP_202_ACCEPTED, headers={'Access-Control-Allow-Headers': 'Set-Cookie'})
