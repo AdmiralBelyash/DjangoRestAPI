@@ -71,7 +71,7 @@ class TestAlgorithm:
         self.correct_answers = self.testing_result.question_summary - self.testing_result.wrong_questions
 
     def is_next_level(self):
-        print(self.correct_answers, self.test_settings.next_level_score)
+        print(self.correct_answers, self.test_settings.next_level_score, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
         return self.correct_answers >= self.test_settings.next_level_score
 
     def get_statistics(self):
