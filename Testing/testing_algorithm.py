@@ -34,25 +34,25 @@ class TestAlgorithm:
 
         random_items = random.sample(items, self.questions_count)
 
-        self.testing_result().set_answered_questions(random_items)
-
         return random_items, self.level.id
 
     def get_questions(self, next_level, level=None):
+        print(level, 'start')
         if not level:
             level = self.level.id
 
         if next_level:
             level += 1
+        print(level, 'after')
 
         items = list(Questions.objects.filter(
             competence__id=self.competence.id,
             level__id=level
         ))
 
-        random_items = random.sample(items, self.questions_count)
+        print(items)
 
-        self.testing_result().set_answered_questions(random_items)
+        random_items = random.sample(items, self.questions_count)
 
         return random_items, level
 
@@ -60,19 +60,26 @@ class TestAlgorithm:
         self,
         answers_ids: list[int]
     ):
+        user = User.objects.get(
+            id=self.user.id
+        )
+        testing_result, _ = TestingResult.objects.get_or_create(
+            user_id=user,
+            competence_id=self.competence
+        )
+
         answers = Answers.objects.filter(
             id__in=answers_ids
         )
         print(answers.count())
-        self.testing_result().question_summary = answers.count()
-        print(self.testing_result().question_summary, 'ALL')
+        testing_result.all_questions = answers.count()
+        print(testing_result.all_questions, 'ALL')
         for answer in answers:
             if not answer.is_correct:
-                self.testing_result().wrong_questions += 1
-        self.testing_result().save()
-        print(self.testing_result().wrong_questions, 'WRONG')
+                testing_result.wrong_questions += 1
+        print(testing_result.wrong_questions, 'WRONG')
 
-        self.correct_answers = self.testing_result().question_summary - self.testing_result().wrong_questions
+        self.correct_answers = testing_result.all_questions - testing_result.wrong_questions
         print(self.correct_answers, 'CORRECT')
         return self.correct_answers >= self.test_settings.next_level_score
 

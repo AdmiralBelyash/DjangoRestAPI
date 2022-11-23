@@ -306,7 +306,7 @@ class TestingResult(models.Model):
     competence = models.ForeignKey(
         Competence,
         name='competence',
-        default=2,
+        default=1,
         on_delete=models.CASCADE
     )
     level = models.ForeignKey(

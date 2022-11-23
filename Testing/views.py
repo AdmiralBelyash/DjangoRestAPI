@@ -4,6 +4,7 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenViewBase
 
 from . import serializers
 from .models import (
@@ -243,10 +244,13 @@ class Test(APIView):
             answers_ids=request.data['answers']
         )
 
-        print(next_level)
+        print(next_level, 'from response')
+        print(request.data['level'])
 
         questions, level = self.testing_algorithm.get_questions(next_level, request.data['level'])
+        print(questions)
         serializer = serializers.QuestionsSerializer(questions, many=True)
+        print(serializer.data)
 
         return Response(
             data={
@@ -315,3 +319,8 @@ class TestSettingsListView(generics.GenericAPIView):
 class TestSettingsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TestSettingsSerializer
     queryset = TestSettings.objects.all()
+
+
+class TokenObtainPairView(TokenViewBase):
+    serializer_class = serializers.TokenObtainPairSerializer
+
