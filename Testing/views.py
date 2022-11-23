@@ -290,12 +290,12 @@ class TestSettingsListView(generics.GenericAPIView):
     def post(self, request):
         data = request.data
         TestSettings.objects.create(
-            competence=Competence(data['competence']),
-            level=Levels(data['level']),
-            time=data['testTime'],
-            questions_count=data['questionsCount'],
-            next_level_score=data['thresholdScore'],
-            name=data['testName']
+            competence=Competence(data['competence_id']),
+            level=Levels(data['level_id']),
+            time=data['time'],
+            questions_count=data['questions_count'],
+            next_level_score=data['next_level_score'],
+            name=data['name']
         )
 
         return Response(status=status.HTTP_200_OK)
