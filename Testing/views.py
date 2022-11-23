@@ -345,3 +345,13 @@ class TestSettingsDetail(generics.RetrieveUpdateDestroyAPIView):
 class TokenObtainPairView(TokenViewBase):
     serializer_class = serializers.TokenObtainPairSerializer
 
+
+class LastResult(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        query = TestingResult.objects.filter(
+            user=request.user,
+        ).last()
+        serializer = serializers.TestingResultSerializer(query, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

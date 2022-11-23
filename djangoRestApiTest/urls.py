@@ -15,6 +15,7 @@ urlpatterns = [
     path('themes', views.ThemeList.as_view()),
     path('themes/<int:pk>', views.ThemeDetail.as_view()),
     path('test_result', views.TestResultList.as_view()),
+    path('test_result/last', views.LastResult.as_view()),
     path('test_result/<int:pk>', views.TestResultDetail.as_view()),
     path('competence', views.CompetenceList.as_view()),
     path('level', views.LevelList.as_view()),
