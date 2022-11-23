@@ -139,6 +139,10 @@ class ThemesSerializer(serializers.ModelSerializer):
 class TestingResultSerializer(serializers.ModelSerializer):
     level = serializers.CharField(source='level.name')
     competence = serializers.CharField(source='competence.competence')
+    correct_answers = serializers.SerializerMethodField()
+
+    def get_correct_answers(self, obj):
+        return obj.question_summary - obj.wrong_questions
 
     class Meta:
         model = TestingResult
@@ -146,13 +150,12 @@ class TestingResultSerializer(serializers.ModelSerializer):
             'user_id',
             'level',
             'competence',
+            'test_id',
             'updated_date',
             'question_summary',
             'wrong_questions',
-            'skipped_question_summary',
             'time_summary',
             'time_spent',
-            'answered_questions',
         ]
 
 

@@ -267,6 +267,12 @@ class TestingResult(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
+    test_id = models.ForeignKey(
+        TestSettings,
+        name='test_id',
+        null=True,
+        on_delete=models.CASCADE,
+    )
     updated_time = models.DateTimeField(
         name='updated_date',
         default=django.utils.timezone.now

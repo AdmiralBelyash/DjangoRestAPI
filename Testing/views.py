@@ -260,21 +260,21 @@ class Test(APIView):
             answers_ids=request.data['answers']
         )
 
-        print(next_level, 'from response')
-        print(request.data['level'])
+        response = self.testing_algorithm.get_questions(next_level, request.data['level'])
+        if isinstance(response, tuple):
+            questions, level = response
+            serializer = serializers.QuestionsSerializer(questions, many=True)
 
-        questions, level = self.testing_algorithm.get_questions(next_level, request.data['level'])
-        print(questions)
-        serializer = serializers.QuestionsSerializer(questions, many=True)
-        print(serializer.data)
-
-        return Response(
-            data={
-                'questions': serializer.data,
-                'level': level,
-            },
-            status=status.HTTP_200_OK
-        )
+            return Response(
+                data={
+                    'questions': serializer.data,
+                    'level': level,
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            serializer = serializers.TestingResultSerializer(response, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @property
     def test_settings(self):
