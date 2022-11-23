@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from django.template.loaders import cached
 from rest_framework import generics, status
 from rest_framework.generics import RetrieveUpdateAPIView
@@ -353,6 +354,6 @@ class LastResult(APIView):
     def get(self, request):
         query = TestingResult.objects.filter(
             user_id=request.user,
-        ).last()
+        )
         serializer = serializers.TestingResultSerializer(query, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
