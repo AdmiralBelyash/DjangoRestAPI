@@ -290,8 +290,8 @@ class TestSettingsListView(generics.GenericAPIView):
     def post(self, request):
         data = request.data
         TestSettings.objects.create(
-            competence=Competence(data['competence_id']),
-            level=Levels(data['level_id']),
+            competence_id=Competence(data['competence_id']),
+            level_id=Levels(data['level_id']),
             time=data['time'],
             questions_count=data['questions_count'],
             next_level_score=data['next_level_score'],
