@@ -46,7 +46,7 @@ class TestAlgorithm:
         if level == 7 or level == 1:
             return self.get_statistics()
 
-        if self.testing_result.all_questions >= (
+        if self.testing_result.question_summary >= (
             Levels.objects.all().count() * self.test_settings.questions_count
         ):
             return self.get_statistics()
