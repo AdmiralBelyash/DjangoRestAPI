@@ -293,12 +293,12 @@ class TestingResult(models.Model):
         help_text='Skipped questions count',
         null=True,
     )
-    time_summary = models.DurationField(
+    time_summary = models.TimeField(
         name='time_summary',
         null=True,
         help_text='Estimated Time'
     )
-    time_spent = models.DurationField(
+    time_spent = models.TimeField(
         name='time_spent',
         null=True,
         help_text='Time spent'
