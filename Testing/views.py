@@ -351,7 +351,7 @@ class LastResult(APIView):
 
     def get(self, request):
         query = TestingResult.objects.filter(
-            user=request.user,
+            user_id=request.user,
         ).last()
         serializer = serializers.TestingResultSerializer(query, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
