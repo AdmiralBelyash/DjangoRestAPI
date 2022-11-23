@@ -90,7 +90,7 @@ class TestAlgorithm:
 
         self.correct_answers = answers_count - wrong_answers
 
-        testing_result.all_questions += answers_count
+        testing_result.question_summary += answers_count
         testing_result.wrong_questions = wrong_answers
 
         return self.correct_answers >= self.test_settings.next_level_score
