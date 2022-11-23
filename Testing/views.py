@@ -14,7 +14,7 @@ from .models import (
     User,
     TestingResult,
     Competence,
-    TestSettings,
+    TestSettings, Answers,
 )
 from .renderers import UserJSONRenderer
 from .serializers import TestSettingsSerializer, RegistrationSerializer, LoginSerializer, UserSerializer
@@ -117,12 +117,28 @@ class QuestionsList(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
+        theme = Themes.objects.get(
+            id=data['theme']
+        )
+        level = Levels.objects.get(
+            id=data['level']
+        )
+        competence = Competence.objects.get(
+            id=theme.competence_id
+        )
         new_question = Questions.objects.create(
             question=data['question'],
-            theme=Themes(data['theme']),
-            level=Levels(data['level']),
+            theme=theme,
+            competence=competence,
+            level=level,
             type=data['type']
         )
+        for answer in data['answers']:
+            Answers.objects.create(
+                question=new_question,
+                answer=answer['answer'],
+                is_correct=answer['is_correct'],
+            )
         serializer = serializers.QuestionsSerializer(new_question)
         return Response(serializer.data)
 
@@ -227,7 +243,7 @@ class Test(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        questions, level = self.testing_algorithm().get_start_questions()
+        questions, level = self.testing_algorithm.get_start_questions()
         serializer = serializers.QuestionsSerializer(questions, many=True)
 
         return Response(
@@ -240,14 +256,14 @@ class Test(APIView):
 
     def post(self, request):
 
-        next_level = self.testing_algorithm().calculate_statistic(
+        next_level = self.testing_algorithm.calculate_statistic(
             answers_ids=request.data['answers']
         )
 
         print(next_level, 'from response')
         print(request.data['level'])
 
-        questions, level = self.testing_algorithm().get_questions(next_level, request.data['level'])
+        questions, level = self.testing_algorithm.get_questions(next_level, request.data['level'])
         print(questions)
         serializer = serializers.QuestionsSerializer(questions, many=True)
         print(serializer.data)
@@ -260,14 +276,16 @@ class Test(APIView):
             status=status.HTTP_200_OK
         )
 
+    @property
     def test_settings(self):
         return TestSettings.objects.get(
             id=self.request.GET.get('id')
         )
 
+    @property
     def testing_algorithm(self):
         return TestAlgorithm(
-            self.test_settings(),
+            self.test_settings,
             self.request.user
         )
 

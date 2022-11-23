@@ -65,7 +65,7 @@ class TestAlgorithm:
         )
         testing_result, _ = TestingResult.objects.get_or_create(
             user_id=user,
-            competence_id=self.competence
+            competence_id=self.competence.id
         )
 
         answers = Answers.objects.filter(
