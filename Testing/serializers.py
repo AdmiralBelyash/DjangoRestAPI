@@ -156,6 +156,7 @@ class TestingResultSerializer(serializers.ModelSerializer):
             'wrong_questions',
             'time_summary',
             'time_spent',
+            'correct_answers'
         ]
 
 

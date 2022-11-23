@@ -91,12 +91,20 @@ class TestAlgorithm:
         self.correct_answers = answers_count - wrong_answers
 
         testing_result.question_summary += answers_count
-        testing_result.wrong_questions = wrong_answers
+        testing_result.wrong_questions += wrong_answers
+        testing_result.save()
 
         return self.correct_answers >= self.test_settings.next_level_score
 
     def get_statistics(self):
-        return self.testing_result
+        user = User.objects.get(
+            id=self.user.id
+        )
+        return TestingResult.objects.filter(
+            user_id=user,
+            competence_id=self.competence.id,
+            test_id=self.test_settings
+        )
 
     @property
     def testing_result(self):
