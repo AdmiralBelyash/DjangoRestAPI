@@ -1,3 +1,4 @@
+import datetime
 import random
 
 from .models import (
@@ -43,7 +44,7 @@ class TestAlgorithm:
         if not level:
             level = self.level.id
 
-        if time >= self.test_settings.time:
+        if datetime.datetime.strptime(time, '%H:%M:%S').time() >= self.test_settings.time:
             return self.get_statistics()
 
         if level == 7 or level == 1:
