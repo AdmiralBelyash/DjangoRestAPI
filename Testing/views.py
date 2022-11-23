@@ -258,7 +258,8 @@ class Test(APIView):
 
         next_level = self.testing_algorithm.calculate_statistic(
             answers_ids=request.data['answers'],
-            time_spent=request.data['time']
+            time_spent=request.data['time'],
+            level=request.data['level']
         )
 
         response = self.testing_algorithm.get_questions(

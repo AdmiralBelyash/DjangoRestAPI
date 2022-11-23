@@ -74,6 +74,7 @@ class TestAlgorithm:
         self,
         answers_ids: list[int],
         time_spent,
+        level,
     ):
         user = User.objects.get(
             id=self.user.id
@@ -99,6 +100,7 @@ class TestAlgorithm:
         testing_result.question_summary += answers_count
         testing_result.wrong_questions += wrong_answers
         testing_result.time_spent = time_spent
+        testing_result.level = level
         testing_result.save()
 
         return self.correct_answers >= self.test_settings.next_level_score
