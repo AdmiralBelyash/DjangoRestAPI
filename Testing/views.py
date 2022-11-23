@@ -261,7 +261,11 @@ class Test(APIView):
             time_spent=request.data['time']
         )
 
-        response = self.testing_algorithm.get_questions(next_level, request.data['level'])
+        response = self.testing_algorithm.get_questions(
+            next_level=next_level,
+            level=request.data['level'],
+            time=request.data['time']
+        )
         if isinstance(response, tuple):
             questions, level = response
             serializer = serializers.QuestionsSerializer(questions, many=True)

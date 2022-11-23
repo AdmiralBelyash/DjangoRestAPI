@@ -39,9 +39,12 @@ class TestAlgorithm:
 
         return random_items, self.level.id
 
-    def get_questions(self, next_level, level=None):
+    def get_questions(self, next_level, time, level=None):
         if not level:
             level = self.level.id
+
+        if time >= self.test_settings.time:
+            return self.get_statistics()
 
         if level == 7 or level == 1:
             return self.get_statistics()
