@@ -68,7 +68,8 @@ class TestAlgorithm:
 
     def calculate_statistic(
         self,
-        answers_ids: list[int]
+        answers_ids: list[int],
+        time_spent,
     ):
         user = User.objects.get(
             id=self.user.id
@@ -76,7 +77,8 @@ class TestAlgorithm:
         testing_result, _ = TestingResult.objects.get_or_create(
             user_id=user,
             test_id=self.test_settings,
-            competence_id=self.competence.id
+            competence_id=self.competence.id,
+            time_summary=self.test_settings.time
         )
 
         answers = Answers.objects.filter(
@@ -92,6 +94,7 @@ class TestAlgorithm:
 
         testing_result.question_summary += answers_count
         testing_result.wrong_questions += wrong_answers
+        testing_result.time_spent = time_spent
         testing_result.save()
 
         return self.correct_answers >= self.test_settings.next_level_score
@@ -114,7 +117,8 @@ class TestAlgorithm:
         testing_result, _ = TestingResult.objects.get_or_create(
             user_id=user,
             competence_id=self.competence.id,
-            test_id=self.test_settings
+            test_id=self.test_settings,
+            time_summary=self.test_settings.time
         )
         return testing_result
 
