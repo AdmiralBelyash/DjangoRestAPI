@@ -106,7 +106,7 @@ class TestAlgorithm:
         testing_result, _ = TestingResult.objects.get_or_create(
             user_id=user,
             competence_id=self.competence.id,
-            test_id=self.test_settings.id
+            test_id=self.test_settings
         )
         return testing_result
 
