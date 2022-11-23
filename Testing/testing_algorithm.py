@@ -75,7 +75,7 @@ class TestAlgorithm:
         )
         testing_result, _ = TestingResult.objects.get_or_create(
             user_id=user,
-            test_id=self.test_settings.id,
+            test_id=self.test_settings,
             competence_id=self.competence.id
         )
 
