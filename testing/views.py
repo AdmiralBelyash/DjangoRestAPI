@@ -357,3 +357,26 @@ class LastResult(APIView):
         )
         serializer = serializers.TestingResultSerializer(query, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class CreateQuestions(APIView):
+    def get(self, request):
+        theme = Themes.objects.all().first()
+        competence = Competence.objects.all().first()
+        for level in Levels.objects.all():
+            for i in range(30):
+                question = Questions.objects.create(
+                    question=f'{level} Вопрос {i}',
+                    level=level,
+                    theme=theme,
+                    competence=competence,
+                    type=1,
+                )
+                print(question.question)
+                for j in range(3):
+                    Answers.objects.create(
+                        answer=f'Ответ {j}',
+                        question=question,
+                        is_correct=True if j == 1 else False
+                    )
+        return Response(status=status.HTTP_200_OK, data='Created')

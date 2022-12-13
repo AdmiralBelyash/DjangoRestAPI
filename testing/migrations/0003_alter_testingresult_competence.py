@@ -7,13 +7,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Testing', '0002_rename_competence_testsettings_competence_id_and_more'),
+        ('testing', '0002_rename_competence_testsettings_competence_id_and_more'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='testingresult',
             name='competence',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='Testing.competence'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='testing.competence'),
         ),
     ]

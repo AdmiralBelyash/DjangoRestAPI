@@ -41,13 +41,7 @@ class TestAlgorithm:
         return random_items, self.level.id
 
     def get_questions(self, next_level, time, level=None):
-        if not level:
-            level = self.level.id
-
         if datetime.datetime.strptime(time, '%H:%M:%S').time() >= self.test_settings.time:
-            return self.get_statistics()
-
-        if level == 7 or level == 1:
             return self.get_statistics()
 
         if self.testing_result.question_summary >= (
@@ -55,11 +49,24 @@ class TestAlgorithm:
         ):
             return self.get_statistics()
 
-        if next_level:
-            level += 1
+        if not level:
+            level = self.level.id
 
-        if not next_level:
-            level -= 1
+        if level == 7:
+            self.get_statistics()
+
+        if next_level:
+            if level == 6:
+                level += 1
+            else:
+                level += 2
+        else:
+            if level == 1:
+                result = self.get_statistics()
+                result.update(level=Levels(0))
+                return result
+            else:
+                level -= 1
 
         items = list(Questions.objects.filter(
             competence__id=self.competence.id,
@@ -100,7 +107,7 @@ class TestAlgorithm:
         testing_result.question_summary += answers_count
         testing_result.wrong_questions += wrong_answers
         testing_result.time_spent = time_spent
-        testing_result.level = level
+        testing_result.level = Levels(level)
         testing_result.save()
 
         return self.correct_answers >= self.test_settings.next_level_score

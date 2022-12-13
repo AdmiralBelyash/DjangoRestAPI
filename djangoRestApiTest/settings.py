@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = 'Testing.User'
+AUTH_USER_MODEL = 'testing.User'
 
 # Application definition
 
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'djoser',
     'corsheaders',
-    'Testing',
+    'testing',
 ]
 
 MIDDLEWARE = [

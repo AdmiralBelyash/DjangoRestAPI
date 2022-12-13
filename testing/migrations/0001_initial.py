@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 ('post', models.CharField(default='Unknown', max_length=150, verbose_name='Должность сотрудника')),
                 ('phone_number', models.CharField(default='Unknown', max_length=12, unique=True, verbose_name='Номер телефона')),
                 ('address', models.CharField(default='Unknown', max_length=150, verbose_name='Адрес сотрудника')),
-                ('current_level', models.ForeignKey(default=2, on_delete=models.SET(2), to='Testing.levels')),
+                ('current_level', models.ForeignKey(default=2, on_delete=models.SET(2), to='testing.levels')),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
             ],
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(help_text='Название темы', max_length=500, verbose_name='Название темы')),
-                ('competence', models.ForeignKey(default='Unknown', on_delete=django.db.models.deletion.CASCADE, related_name='competence_theme', to='Testing.competence')),
+                ('competence', models.ForeignKey(default='Unknown', on_delete=django.db.models.deletion.CASCADE, related_name='competence_theme', to='testing.competence')),
             ],
             options={
                 'verbose_name': 'Тема',
@@ -84,8 +84,8 @@ class Migration(migrations.Migration):
                 ('time', models.TimeField(default=datetime.time(0, 0), verbose_name='Время теста')),
                 ('next_level_score', models.IntegerField(default=0, verbose_name='Количество баллов для перехода на следующий уровень')),
                 ('questions_count', models.IntegerField(default=0, verbose_name='Questions in block count')),
-                ('competence', models.ForeignKey(default='Unknown', help_text='Test Competence', on_delete=django.db.models.deletion.CASCADE, related_name='test_competence', to='Testing.competence')),
-                ('level', models.ForeignKey(default=2, help_text='Начальный уровень сложности', on_delete=django.db.models.deletion.CASCADE, related_name='start_level', to='Testing.levels')),
+                ('competence', models.ForeignKey(default='Unknown', help_text='Test Competence', on_delete=django.db.models.deletion.CASCADE, related_name='test_competence', to='testing.competence')),
+                ('level', models.ForeignKey(default=2, help_text='Начальный уровень сложности', on_delete=django.db.models.deletion.CASCADE, related_name='start_level', to='testing.levels')),
             ],
             options={
                 'verbose_name': 'Test Setting',
@@ -103,8 +103,8 @@ class Migration(migrations.Migration):
                 ('time_summary', models.DurationField(help_text='Estimated Time', null=True)),
                 ('time_spent', models.DurationField(help_text='Time spent', null=True)),
                 ('answered_questions', models.CharField(help_text='Questions answered by user', max_length=256, null=True)),
-                ('competence', models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='Testing.competence')),
-                ('level', models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='Testing.levels')),
+                ('competence', models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='testing.competence')),
+                ('level', models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='testing.levels')),
                 ('user_id', models.ForeignKey(help_text='User ID', null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -118,9 +118,9 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('question', models.TextField(default='', help_text='Текст вопроса', max_length=3000, verbose_name='Вопрос')),
                 ('type', models.CharField(blank=True, choices=[('1', 'Один ответ'), ('2', 'Несколько ответов')], default=1, help_text='Тип вопроса', max_length=1)),
-                ('competence', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='Testing.competence')),
-                ('level', models.ForeignKey(help_text='Сложность вопроса', on_delete=django.db.models.deletion.CASCADE, to='Testing.levels')),
-                ('theme', models.ForeignKey(help_text='Тема вопроса', on_delete=django.db.models.deletion.CASCADE, to='Testing.themes')),
+                ('competence', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='testing.competence')),
+                ('level', models.ForeignKey(help_text='Сложность вопроса', on_delete=django.db.models.deletion.CASCADE, to='testing.levels')),
+                ('theme', models.ForeignKey(help_text='Тема вопроса', on_delete=django.db.models.deletion.CASCADE, to='testing.themes')),
             ],
             options={
                 'verbose_name': 'Вопрос',
@@ -132,8 +132,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('link', models.CharField(max_length=200, verbose_name='Ссылка на курс')),
-                ('level', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='level', to='Testing.levels')),
-                ('theme', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='theme', to='Testing.themes')),
+                ('level', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='level', to='testing.levels')),
+                ('theme', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='theme', to='testing.themes')),
             ],
             options={
                 'verbose_name': 'Курс для повышения квалификации',
@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('answer', models.TextField(max_length=3000, verbose_name='Ответ')),
                 ('is_correct', models.BooleanField(default=False, verbose_name='Правильно или нет')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='Testing.questions')),
+                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='testing.questions')),
             ],
             options={
                 'verbose_name': 'Ответ',
