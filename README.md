@@ -1,5 +1,6 @@
 # How to install
-## With docker:
+
+## With docker
 ```
 docker-compose build
 docker-compose up -d
