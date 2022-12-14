@@ -53,7 +53,7 @@ class TestAlgorithm:
             level = self.level.id
 
         if level == 7:
-            self.get_statistics()
+            return self.get_statistics()
 
         if next_level:
             if level == 6:
