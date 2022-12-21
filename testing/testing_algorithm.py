@@ -99,10 +99,28 @@ class TestAlgorithm:
         wrong_answers = 0
         answers_count = answers.count()
         for answer in answers:
-            if not answer.is_correct:
-                wrong_answers += 1
+            if answer.question.type == 2:
+                score = 1/Answers.objects.filter(
+                        question=answer.question,
+                        is_correct=True
+                    )
+                print(score)
+                if answer.is_correct:
+                    self.correct_answers += score
+                    print(self.correct_answers)
+                else:
+                    if self.correct_answers != 0:
+                        self.correct_answers -= score 
+                        print(self.correct_answers)
+                    else:
+                        continue
+            
+            if answer.question.type == 1:
+                if answer.is_correct:
+                    self.correct_answers += 1
 
-        self.correct_answers = answers_count - wrong_answers
+
+        wrong_answers = answers_count - self.correct_answers
 
         testing_result.question_summary += answers_count
         testing_result.wrong_questions += wrong_answers
